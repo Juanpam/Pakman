@@ -1,4 +1,7 @@
+"""
+Basic Player class used for the Pakman game.
 
+"""
 
 class genericPlayer():
 
