@@ -40,7 +40,8 @@ class Game():
         self.imageId = 0
         self.gameMap = map.Map()
         self.loadSpriteSheet()
-        self.charsPos = self.getCharsPos()
+        self.charsPos = self.getCharsPos() #Character positions on top-left edge
+        self.charsPosCenter = self.getCharPosCenter()
         self.background = self.drawMap()
         
 
@@ -73,8 +74,7 @@ class Game():
                     self.player.changeDir(1)
 
 
-            self.player.updatePos()
-            self.charsPos[0] = self.player.getPos()
+            self.movePlayer()
             self.background=self.drawMap()
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
@@ -156,7 +156,7 @@ class Game():
 
     def getCellFromPos(self,x,y):
         scaledCellSize = (self.cellSize * self.width)/(self.cellSize * self.gameMap.dimensions[0])
-        return (x//scaledCellSize,y//scaledCellSize)
+        return (int(x//scaledCellSize),int(y//scaledCellSize))
 
     def getPosFromCell(self, x, y):
         scaledCellSize = (self.cellSize * self.width)/(self.cellSize * self.gameMap.dimensions[0])
@@ -181,6 +181,38 @@ class Game():
                 if(self.gameMap.getCell(i,j) in range(4,9)):
                     charPos[self.gameMap.getCell(i,j)-4]=(self.cellSize*i,self.cellSize*j)
         return charPos
+
+    def getCharPosCenter(self):
+        charPosCenter = []
+        for i in range(len(self.charsPos)):
+            print(i)
+            charPosCenter.append((self.charsPos[0][0]+(self.images[3+i].get_width()//2),self.charsPos[0][1]+(self.images[3+i].get_height()//2)))
+        return charPosCenter
+
+    def updateMapPlayer(self):
+        #Updates the player position on the logical map using the default cellsize
+
+
+        pos = ((self.charsPos[0][0]+(self.images[4].get_width()//2))//self.cellSize,
+            (self.charsPos[0][1]+(self.images[4].get_height()//2))//self.cellSize)
+        #print(pos)
+        self.gameMap.updateMap(*pos, 4)
+
+    def movePlayer(self):
+
+        #Checks if the player can move in the desired direction
+        print(self.charsPosCenter)
+        if((self.player.dir==1 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize)+1,self.charsPosCenter[0][1]//self.cellSize)!=1) or
+            (self.player.dir==2 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize)-1,self.charsPosCenter[0][1]//self.cellSize)!=1) or
+            (self.player.dir==3 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),(self.charsPosCenter[0][1]//self.cellSize)-1)!=1) or
+            (self.player.dir==4 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),(self.charsPosCenter[0][1]//self.cellSize)+1)!=1)):
+            
+            self.player.updatePos()
+
+        print(self.player.dir,((self.charsPosCenter[0][0]//self.cellSize),self.charsPosCenter[0][1]//self.cellSize))
+        self.charsPos[0] = self.player.getPos()
+        self.charsPosCenter=self.getCharPosCenter()
+        self.updateMapPlayer()
 
 game = Game()
 

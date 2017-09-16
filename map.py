@@ -43,4 +43,13 @@ class Map():
         """
         Returns the cell in the (x,y) position
         """
+        if(x>=len(self.matrix) or y>=len(self.matrix[0])):
+            return 0
         return self.matrix[y][x]
+
+    def updateMap(self, x, y, cellContent):
+        """
+        Updates the cell in the x,y position for with the given cellContent
+        """
+
+        self.matrix[y][x]=cellContent
