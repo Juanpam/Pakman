@@ -200,16 +200,20 @@ class Game():
 
     def movePlayer(self):
 
-        #Checks if the player can move in the desired direction
+        #Checks if the player can move in the desired direction using the borders and the center
+        #Also, it on some cases adds the image width and heigth through the conditions
+        
         print(self.charsPosCenter)
-        if((self.player.dir==1 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize)+1,self.charsPosCenter[0][1]//self.cellSize)!=1) or
-            (self.player.dir==2 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize)-1,self.charsPosCenter[0][1]//self.cellSize)!=1) or
-            (self.player.dir==3 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),(self.charsPosCenter[0][1]//self.cellSize)-1)!=1) or
-            (self.player.dir==4 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),(self.charsPosCenter[0][1]//self.cellSize)+1)!=1)):
+        if((self.player.dir==1 and self.gameMap.getCell(((self.charsPos[0][0]+self.images[0].get_width()+1)//self.cellSize),self.charsPosCenter[0][1]//self.cellSize)!=1) or
+            (self.player.dir==2 and self.gameMap.getCell(((self.charsPos[0][0]-1)//self.cellSize),self.charsPosCenter[0][1]//self.cellSize)!=1) or
+            (self.player.dir==3 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]+self.images[0].get_height()+1)//self.cellSize))!=1) or
+            (self.player.dir==4 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]-1)//self.cellSize))!=1)):
             
             self.player.updatePos()
 
         print(self.player.dir,((self.charsPosCenter[0][0]//self.cellSize),self.charsPosCenter[0][1]//self.cellSize))
+        print((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
+        print((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]+self.images[0].get_height()-1)//self.cellSize), "celda arriba")
         self.charsPos[0] = self.player.getPos()
         self.charsPosCenter=self.getCharPosCenter()
         self.updateMapPlayer()
