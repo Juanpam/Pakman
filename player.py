@@ -29,6 +29,12 @@ class genericPlayer():
 		if(newDir>=1 and newDir <=4):
 			self.dir = newDir
 
+	def nextDir(self):
+		newDir = self.dir+1
+		if(not (newDir>=1 and newDir <=4)):
+			return 1
+		return newDir
+
 	def updatePos(self):
 		if(self.dir==1):
 			self.posx += self.spdx

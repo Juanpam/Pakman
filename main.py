@@ -11,7 +11,7 @@ Makes use of the Pygame and Sys module.
 """
 
 
-import sys, pygame, spritesheet, map, player
+import sys, pygame, spritesheet, map, player, astar
 pygame.init()
 
 
@@ -36,8 +36,6 @@ class Game():
         size = self.width, self.height
         self.screen = pygame.display.set_mode(size)
         self.cellSize = 50
-        
-        self.imageId = 0
         self.gameMap = map.Map()
         self.loadSpriteSheet()
         self.charsPos = self.getCharsPos() #Characters top-left edge position 
@@ -47,12 +45,21 @@ class Game():
 
         for i in self.gameMap.matrix:
             print(i)
+        print("--------------------------------")
+        for i in self.gameMap.getAStarMap():
+            print(i)
+        self.AStarMap = self.gameMap.getAStarMap()
+        self.players = [player.msPakman(), player.ghost()]
 
 
-        
-        self.player = player.msPakman()
-        self.player.setPos(*self.charsPos[0])
-        self.createEvents()
+
+        self.path = astar.pathFind(self.AStarMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
+        self.path = astar.translatePath(self.path)
+
+        print(self.path)
+        for p in range(len(self.players)):
+            self.players[p].setPos(*self.charsPos[p])
+        #self.createEvents()
         self.infiniteLoop()
 
     def infiniteLoop(self):
@@ -63,18 +70,22 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: sys.exit()
                 if event.type == pygame.USEREVENT+1:
-                    self.imageId = (self.imageId + 1)%8
+                    print("direccion vieja",self.players[1].dir)
+                    self.players[1].changeDir(self.players[1].nextDir())
+                    print("direccion nueva",self.players[1].dir)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
-                    self.player.changeDir(4)
+                    self.players[0].changeDir(4)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
-                    self.player.changeDir(3)
+                    self.players[0].changeDir(3)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_LEFT:
-                    self.player.changeDir(2)
+                    self.players[0].changeDir(2)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_RIGHT:
-                    self.player.changeDir(1)
+                    self.players[0].changeDir(1)
 
 
-            self.movePlayer(0)
+            #for i,p in enumerate(self.players):
+            #     self.movePlayer(i)
+            #self.movePlayer(1)
             self.background=self.drawMap()
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
@@ -90,7 +101,7 @@ class Game():
     def createEvents(self):
 
         #User event for the sprites
-        pygame.time.set_timer(pygame.USEREVENT+1,100)
+        pygame.time.set_timer(pygame.USEREVENT+1,1000)
 
     def loadSpriteSheet(self):
 
@@ -185,18 +196,18 @@ class Game():
     def getCharPosCenter(self):
         charPosCenter = []
         for i in range(len(self.charsPos)):
-            print(i)
-            charPosCenter.append((self.charsPos[0][0]+(self.images[3+i].get_width()//2),self.charsPos[0][1]+(self.images[3+i].get_height()//2)))
+            #print(i)
+            charPosCenter.append((self.charsPos[i][0]+(self.images[3+i].get_width()//2),self.charsPos[i][1]+(self.images[3+i].get_height()//2)))
         return charPosCenter
 
-    def updateMapPlayer(self):
+    def updateMapPlayer(self,playerId):
         #Updates the player position on the logical map using the default cellsize
 
 
-        pos = ((self.charsPos[0][0]+(self.images[4].get_width()//2))//self.cellSize,
-            (self.charsPos[0][1]+(self.images[4].get_height()//2))//self.cellSize)
+        pos = ((self.charsPos[playerId][0]+(self.images[3+playerId].get_width()//2))//self.cellSize,
+            (self.charsPos[playerId][1]+(self.images[3+playerId].get_height()//2))//self.cellSize)
         #print(pos)
-        self.gameMap.updateMap(*pos, 4)
+        self.gameMap.updateMap(*pos, 4+playerId)
 
 
 
@@ -205,20 +216,23 @@ class Game():
         #Checks if the player can move in the desired direction using the borders and the center
         #Also, it on some cases adds the image width and heigth through the conditions
         
-        print(self.charsPosCenter)
-        if((self.player.dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+self.images[0].get_width()+1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
-            (self.player.dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
-            (self.player.dir==3 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize))!=1) or
-            (self.player.dir==4 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)):
+        #print(self.charsPosCenter)
+        if((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+self.images[0].get_width()+1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
+            (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
+            (self.players[playerId].dir==3 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize))!=1) or
+            (self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)):
             
-            self.player.updatePos()
-
-        print(self.player.dir,((self.charsPosCenter[playerId][0]//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize))
-        print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
-        print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()-1)//self.cellSize), "celda arriba")
-        self.charsPos[0] = self.player.getPos()
+            self.players[playerId].updatePos()
+        # if(playerId==1):
+        #     print(self.players[playerId].dir,((self.charsPosCenter[playerId][0]//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize),"celda actual")
+        #     print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
+        #     print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()-1)//self.cellSize), "celda arriba")
+        self.charsPos[playerId] = self.players[playerId].getPos()
         self.charsPosCenter=self.getCharPosCenter()
-        self.updateMapPlayer()
+        self.updateMapPlayer(playerId)
+
+    
+
 
 game = Game()
 

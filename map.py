@@ -53,3 +53,11 @@ class Map():
         """
 
         self.matrix[y][x]=cellContent
+
+    def getAStarMap(self):
+        AStarMap = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[i])):
+                if(self.matrix[i][j]==1):
+                    AStarMap[i][j] = 1
+        return AStarMap
