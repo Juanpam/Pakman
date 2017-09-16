@@ -40,8 +40,8 @@ class Game():
         self.imageId = 0
         self.gameMap = map.Map()
         self.loadSpriteSheet()
-        self.charsPos = self.getCharsPos() #Character positions on top-left edge
-        self.charsPosCenter = self.getCharPosCenter()
+        self.charsPos = self.getCharsPos() #Characters top-left edge position 
+        self.charsPosCenter = self.getCharPosCenter() #Characters center position
         self.background = self.drawMap()
         
 
@@ -74,7 +74,7 @@ class Game():
                     self.player.changeDir(1)
 
 
-            self.movePlayer()
+            self.movePlayer(0)
             self.background=self.drawMap()
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
@@ -198,22 +198,24 @@ class Game():
         #print(pos)
         self.gameMap.updateMap(*pos, 4)
 
-    def movePlayer(self):
+
+
+    def movePlayer(self,playerId):
 
         #Checks if the player can move in the desired direction using the borders and the center
         #Also, it on some cases adds the image width and heigth through the conditions
         
         print(self.charsPosCenter)
-        if((self.player.dir==1 and self.gameMap.getCell(((self.charsPos[0][0]+self.images[0].get_width()+1)//self.cellSize),self.charsPosCenter[0][1]//self.cellSize)!=1) or
-            (self.player.dir==2 and self.gameMap.getCell(((self.charsPos[0][0]-1)//self.cellSize),self.charsPosCenter[0][1]//self.cellSize)!=1) or
-            (self.player.dir==3 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]+self.images[0].get_height()+1)//self.cellSize))!=1) or
-            (self.player.dir==4 and self.gameMap.getCell((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]-1)//self.cellSize))!=1)):
+        if((self.player.dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+self.images[0].get_width()+1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
+            (self.player.dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
+            (self.player.dir==3 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize))!=1) or
+            (self.player.dir==4 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)):
             
             self.player.updatePos()
 
-        print(self.player.dir,((self.charsPosCenter[0][0]//self.cellSize),self.charsPosCenter[0][1]//self.cellSize))
-        print((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
-        print((self.charsPosCenter[0][0]//self.cellSize),((self.charsPos[0][1]+self.images[0].get_height()-1)//self.cellSize), "celda arriba")
+        print(self.player.dir,((self.charsPosCenter[playerId][0]//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize))
+        print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
+        print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()-1)//self.cellSize), "celda arriba")
         self.charsPos[0] = self.player.getPos()
         self.charsPosCenter=self.getCharPosCenter()
         self.updateMapPlayer()

@@ -43,8 +43,8 @@ class Map():
         """
         Returns the cell in the (x,y) position
         """
-        if(x>=len(self.matrix) or y>=len(self.matrix[0])):
-            return 0
+        if(x>=len(self.matrix) or x<0 or y>=len(self.matrix[0]) or y<0):
+            return 1
         return self.matrix[y][x]
 
     def updateMap(self, x, y, cellContent):
