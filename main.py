@@ -59,6 +59,12 @@ class Game():
         print(self.path)
         for p in range(len(self.players)):
             self.players[p].setPos(*self.charsPos[p])
+
+        self.ghostOldPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+        self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+        if(self.path):
+            self.players[1].changeDir(int(self.path[0]))
+        self.path=self.path[1:]
         #self.createEvents()
         self.infiniteLoop()
 
@@ -85,7 +91,8 @@ class Game():
 
             #for i,p in enumerate(self.players):
             #     self.movePlayer(i)
-            #self.movePlayer(1)
+            self.updateGhostDir()
+            self.movePlayer(1)
             self.background=self.drawMap()
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
@@ -147,7 +154,7 @@ class Game():
         #         image.set_colorkey(self.black)
         #         self.ghostImages[i][j] = image
 
-        self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[2][0]]
+        self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[0][0]]
 
     def drawMap(self):
 
@@ -223,6 +230,7 @@ class Game():
             (self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)):
             
             self.players[playerId].updatePos()
+
         # if(playerId==1):
         #     print(self.players[playerId].dir,((self.charsPosCenter[playerId][0]//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize),"celda actual")
         #     print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
@@ -231,7 +239,14 @@ class Game():
         self.charsPosCenter=self.getCharPosCenter()
         self.updateMapPlayer(playerId)
 
-    
+    def updateGhostDir(self):
+        if(self.path):
+            self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+            
+            if(self.ghostOldPos != self.ghostPos):
+                self.ghostOldPos=self.ghostPos
+                self.players[1].changeDir(int(self.path[0]))
+                self.path=self.path[1:]
 
 
 game = Game()
