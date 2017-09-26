@@ -4,14 +4,16 @@ This module implements a Map class used to represent in a logic way the map in P
 
 """
 from random import *
+from os import path
+import string
 
 class Map():
     """
     This class implements using a matrix the Pakman map. It's used to generate the optimal path for each
-    ghost and to draw the map object's in the screen acordingly
+    ghost and to draw the map object's in the screen accordingly
     """
 
-    def __init__(self):
+    def __init__(self,filename=""):
         """
         Class initialization
         """
@@ -25,19 +27,36 @@ class Map():
         #3 represents a tomato (Big pill)
         #4 represents Ms Pakman
         #5 represents a blue ghost
-        self.matrix = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
-        for i in range(self.dimensions[0]):
-            for j in range(self.dimensions[1]):
-                cellId = randint(0,3)
-                while(cellId == 3 and self.tomatoCount<=0):
+        if(not filename):
+            self.matrix = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
+            for i in range(self.dimensions[0]):
+                for j in range(self.dimensions[1]):
                     cellId = randint(0,3)
-                if(cellId == 3):
-                    self.tomatoCount -= 1 
-                self.matrix[i][j] = cellId
+                    while(cellId == 3 and self.tomatoCount<=0):
+                        cellId = randint(0,3)
+                    if(cellId == 3):
+                        self.tomatoCount -= 1 
+                    self.matrix[i][j] = cellId
+            self.matrix[randint(0,self.dimensions[0]-1)][randint(0,self.dimensions[0]-1)] = 4
+            self.matrix[randint(0,self.dimensions[0]-1)][randint(0,self.dimensions[0]-1)] = 5        
 
-        self.matrix[randint(0,self.dimensions[0]-1)][randint(0,self.dimensions[0]-1)] = 4
-        self.matrix[randint(0,self.dimensions[0]-1)][randint(0,self.dimensions[0]-1)] = 5        
 
+        else:
+            self.load_map(filename)
+            self.dimensions = (len(self.matrix[0]),len(self.matrix))
+        
+
+    def load_map(self,filename):
+        """
+        Loads map from txt file ö called 'filename'
+        The map must contain at least Ms. Pakman (a number 4)
+        """
+        folder=path.dirname(__file__)
+        self.matrix=[]
+        with open(path.join(folder,filename),'rt') as f:
+            for line in f:
+                row = [int(character) for character in str.strip(line)]
+                self.matrix.append(row)
 
     def getCell(self, x, y):
         """

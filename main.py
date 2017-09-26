@@ -37,9 +37,16 @@ class Game():
         self.screen = pygame.display.set_mode(size)
         self.cellSize = 50
         self.gameMap = map.Map()
+
+        #Uncomment to print map
+        #for row in self.gameMap.matrix:
+            #print(row)
+
         self.loadSpriteSheet()
-        self.charsPos = self.getCharsPos() #Characters top-left edge position 
+        self.charsPos = self.getCharsPos() #Characters top-left edge position
+        print(self.charsPos) 
         self.charsPosCenter = self.getCharPosCenter() #Characters center position
+
         self.background = self.drawMap()
         
 
