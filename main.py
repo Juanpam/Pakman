@@ -50,7 +50,7 @@ class Game():
         #Load sprites
         self.loadSpriteSheet()
         self.charsPos = self.getCharsPos() #Characters top-left edge position
-        print(self.charsPos) 
+        #print(self.charsPos) 
         self.charsPosCenter = self.getCharPosCenter() #Characters center position
 
         #Draw map based on the gameMap
@@ -103,9 +103,9 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: sys.exit()
                 if event.type == pygame.USEREVENT+1:
-                    print("direccion vieja",self.players[1].dir)
+                    #print("direccion vieja",self.players[1].dir)
                     self.players[1].changeDir(self.players[1].nextDir())
-                    print("direccion nueva",self.players[1].dir)
+                    #print("direccion nueva",self.players[1].dir)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
                     self.players[0].changeDir(4)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
@@ -121,7 +121,7 @@ class Game():
             self.updateGhostDir()
             self.movePlayer(1)
             self.movePlayer(0)
-            self.background=self.drawMap()
+            self.background=self.drawMap(True)
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
 
@@ -184,7 +184,7 @@ class Game():
 
         self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[0][0]]
 
-    def drawMap(self):
+    def drawMap(self, debug=False):
 
         background = pygame.Surface((self.cellSize*self.gameMap.dimensions[0],self.cellSize*self.gameMap.dimensions[1]))
             
@@ -197,17 +197,26 @@ class Game():
 
 
         background = self.drawCharacters(background)
+        
+
+        if debug:
+            background = self.drawCenterPlayers(background)
+
         background = pygame.transform.smoothscale(background,(self.width,self.height))
         return background
 
-    def drawCenterPlayers(self):
+    def drawCenterPlayers(self,background):
         """
         Draws a rectangle at the center of the players for debugging purposes
         """
-        color = "red"
-        h,w = 1, 1
+        color = (0,255,0)
+        h,w = 10, 10
         for c in self.charsPosCenter: 
-            self.screen.blit(pygame.Surface((c[0],c[1])(h,w)).fill(color))
+            sRectangle = pygame.Surface((h,w))
+            sRectangle.fill(color)
+            background.blit(sRectangle,(c[0]-(w//2),c[1]-(h//2)))
+
+        return background
 
 
     def getCellFromPos(self,x,y):
@@ -284,7 +293,7 @@ class Game():
         if(True):#self.ghostOldPos != self.ghostPos):
             self.ghostOldPos=self.ghostPos
             self.path = self.calcPath()
-            print(self.path)
+            #print(self.path)
             if(self.path):
                 self.players[1].changeDir(int(self.path[0]))
 
