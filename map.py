@@ -44,7 +44,17 @@ class Map():
         else:
             self.load_map(filename)
             self.dimensions = (len(self.matrix[0]),len(self.matrix))
-        
+
+        self.updatePlayersCount()
+
+        if(not self.playersCount>=2):
+            #A valid map contains at least to the player and a ghost
+            try:
+                raise Exception("Loaded map must have at least 2 players. Exiting...")
+
+            except Exception as error:
+                raise
+
 
     def load_map(self,filename):
         """
@@ -74,9 +84,22 @@ class Map():
         self.matrix[y][x]=cellContent
 
     def getAStarMap(self):
+        """
+        Returns a valid map to be used with the AStar algorithm
+        """
         AStarMap = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
         for i in range(len(self.matrix)):
             for j in range(len(self.matrix[i])):
                 if(self.matrix[i][j]==1):
                     AStarMap[i][j] = 1
         return AStarMap
+
+    def updatePlayersCount(self):
+        """
+        Updates the players count using the current map
+        """
+        self.playersCount = 0
+        for row in self.matrix:
+            for cell in row:
+                if(cell >= 4): 
+                    self.playersCount += 1

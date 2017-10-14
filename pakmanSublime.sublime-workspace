@@ -1,0 +1,1124 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"players",
+				"playersCount"
+			],
+			[
+				"Var",
+				"VariableNames"
+			],
+			[
+				"tra",
+				"translatePath\tfunction"
+			],
+			[
+				"chars",
+				"charsPosCenter\tstatement"
+			],
+			[
+				"Astar",
+				"AStarMap\tstatement"
+			],
+			[
+				"pla",
+				"playerId\tparam"
+			],
+			[
+				"ch",
+				"charsPosCenter\tstatement"
+			],
+			[
+				"getChar",
+				"getCharPosCenter\tfunction"
+			],
+			[
+				"charPos",
+				"charPosCenter"
+			],
+			[
+				"get",
+				"get_height"
+			],
+			[
+				"move",
+				"movePlayer\tfunction"
+			],
+			[
+				"msP",
+				"msPakmanImages\tstatement"
+			],
+			[
+				"updateMap",
+				"updateMapPlayer\tfunction"
+			],
+			[
+				"in",
+				"__init__\tfunction"
+			],
+			[
+				"game",
+				"gameMap\tstatement"
+			],
+			[
+				"draw",
+				"drawCharacters"
+			],
+			[
+				"char",
+				"charsPos\tstatement"
+			],
+			[
+				"player",
+				"playersCount\tstatement"
+			],
+			[
+				"getC",
+				"getCharPos\tfunction"
+			],
+			[
+				"tom",
+				"tomatoCount\tstatement"
+			],
+			[
+				"ms",
+				"msPakmanImages\tstatement"
+			],
+			[
+				"tomat",
+				"tomatoImage\tstatement"
+			],
+			[
+				"I",
+				"imageId\tstatement"
+			],
+			[
+				"inter",
+				"intervalSizeG\tstatement"
+			],
+			[
+				"us",
+				"USEREVENT\tinstance"
+			],
+			[
+				"space",
+				"spaceBetweenMSPak\tstatement"
+			],
+			[
+				"ghost",
+				"ghostsCount\tstatement"
+			],
+			[
+				"interva",
+				"intervalSizeMSPak\tstatement"
+			],
+			[
+				"initial",
+				"initialYMSPak\tstatement"
+			],
+			[
+				"load",
+				"loadSpriteSheet"
+			],
+			[
+				"calc",
+				"calcPronostic"
+			],
+			[
+				"row",
+				"rowOffset\tstatement"
+			],
+			[
+				"bot",
+				"bottleNeck\tstatement"
+			],
+			[
+				"pr",
+				"products\tstatement"
+			],
+			[
+				"conf",
+				"confLabel\tstatement"
+			],
+			[
+				"q",
+				"quantity\tstatement"
+			],
+			[
+				"prod",
+				"products\tparam"
+			],
+			[
+				"cost",
+				"costMaterials\tstatement"
+			],
+			[
+				"ad",
+				"addRawMaterial\tfunction"
+			],
+			[
+				"demand",
+				"demandMonth\tstatement"
+			],
+			[
+				"da",
+				"daysMonth\tstatement"
+			],
+			[
+				"plan",
+				"planNoFault\tfunction"
+			],
+			[
+				"opAc",
+				"opAcumulate\tfunction"
+			],
+			[
+				"days",
+				"daysAc\tstatement"
+			],
+			[
+				"demad",
+				"demandMonth\tparam"
+			],
+			[
+				"del",
+				"delCost\tstatement"
+			],
+			[
+				"str",
+				"strCost\tstatement"
+			],
+			[
+				"dem",
+				"demandMonth\tparam"
+			],
+			[
+				"opCo",
+				"opConst\tstatement"
+			],
+			[
+				"dema",
+				"demandMonth\tstatement"
+			],
+			[
+				"read",
+				"readData\tfunction"
+			],
+			[
+				"total",
+				"totalCost\tstatement"
+			],
+			[
+				"fired",
+				"firedCost\tstatement"
+			],
+			[
+				"contrated",
+				"contratedCost\tstatement"
+			],
+			[
+				"with",
+				"withdraw"
+			],
+			[
+				"inv",
+				"invZeroPlanButton\tstatement"
+			],
+			[
+				"initi",
+				"initialRow\tstatement"
+			],
+			[
+				"columns",
+				"columnspan"
+			],
+			[
+				"par",
+				"partialWeeks\tstatement"
+			],
+			[
+				"extra",
+				"extraQuantity\tstatement"
+			],
+			[
+				"exr",
+				"extraQuantity\tstatement"
+			],
+			[
+				"ex",
+				"extraQuantity"
+			],
+			[
+				"partial",
+				"partialWeeks\tstatement"
+			],
+			[
+				"parti",
+				"partialWeeksChild\tstatement"
+			],
+			[
+				"durat",
+				"duration\tstatement"
+			],
+			[
+				"du",
+				"duration\tstatement"
+			],
+			[
+				"part",
+				"partialWeeksChild\tstatement"
+			],
+			[
+				"index",
+				"indexOffset"
+			],
+			[
+				"req",
+				"reqByparent\tparam"
+			],
+			[
+				"require",
+				"requiredByParent\tstatement"
+			],
+			[
+				"text",
+				"textvariable"
+			],
+			[
+				"dis",
+				"displayNetRequirements"
+			],
+			[
+				"indexM",
+				"indexMaterialsItems\tstatement"
+			],
+			[
+				"requ",
+				"requiredByParent\tstatement"
+			],
+			[
+				"child",
+				"childrenRequired"
+			],
+			[
+				"required",
+				"requiredByParent"
+			],
+			[
+				"create",
+				"createMaterial\tfunction"
+			],
+			[
+				"net",
+				"netRequirementsWeek\tstatement"
+			],
+			[
+				"availa",
+				"availablesLeft\tstatement"
+			],
+			[
+				"requi",
+				"requirementsWeek\tstatement"
+			],
+			[
+				"ava",
+				"availablesAlreadyUsed\tstatement"
+			],
+			[
+				"d",
+				"duration\tstatement"
+			],
+			[
+				"u",
+				"updateTotalDuration\tfunction"
+			],
+			[
+				"t",
+				"totalDuration"
+			],
+			[
+				"tota",
+				"totalDuration\tstatement"
+			],
+			[
+				"up",
+				"updateTotalDuration"
+			],
+			[
+				"chi",
+				"childrenRequired\tstatement"
+			],
+			[
+				"pad",
+				"padx"
+			],
+			[
+				"moda",
+				"modalDialog\tfunction"
+			],
+			[
+				"delEle",
+				"delElement"
+			],
+			[
+				"delElement",
+				"delElementButton"
+			],
+			[
+				"inde",
+				"indexProductsItems"
+			],
+			[
+				"parent",
+				"parentIndexItem"
+			],
+			[
+				"paren",
+				"parentIndex\tstatement"
+			],
+			[
+				"pare",
+				"parentName\tparam"
+			],
+			[
+				"wi",
+				"winfo_toplevel"
+			],
+			[
+				"update",
+				"updateProductTree\tfunction"
+			],
+			[
+				"col",
+				"Column"
+			],
+			[
+				"top",
+				"winfo_toplevel\tfunction"
+			],
+			[
+				"grid_s",
+				"grid_slaves\tfunction"
+			],
+			[
+				"kind",
+				"kind\tstatement"
+			],
+			[
+				"modal",
+				"modalDialog"
+			],
+			[
+				"bo",
+				"bottleNeckButton\tstatement"
+			],
+			[
+				"opt",
+				"optCombButton\tstatement"
+			],
+			[
+				"Tree",
+				"Treeview\tclass"
+			],
+			[
+				"CALC",
+				"calcPronostic\tfunction"
+			],
+			[
+				"main",
+				"main_frame\tstatement"
+			],
+			[
+				"colu",
+				"columnspan"
+			],
+			[
+				"sho",
+				"showMPS\tfunction"
+			],
+			[
+				"MAPE",
+				"meanMAPE\tfunction"
+			],
+			[
+				"add",
+				"add_subplot\tfunction"
+			],
+			[
+				"Fi",
+				"figure"
+			],
+			[
+				"figure",
+				"figure\tfunction"
+			],
+			[
+				"wa",
+				"wait_window"
+			],
+			[
+				"te",
+				"text"
+			],
+			[
+				"tex",
+				"textvariable"
+			],
+			[
+				"column",
+				"columnconfigure\tstatement"
+			],
+			[
+				"file",
+				"filename"
+			],
+			[
+				"sh",
+				"showinfo\tfunction"
+			],
+			[
+				"mod",
+				"modNumber"
+			],
+			[
+				"como",
+				"Combobox\tclass"
+			],
+			[
+				"gr",
+				"genGraph\tfunction"
+			],
+			[
+				"re",
+				"resource_path\tfunction"
+			],
+			[
+				"ope",
+				"open_file\tfunction"
+			],
+			[
+				"r",
+				"resource_path\tfunction"
+			],
+			[
+				"mi",
+				"minimize\timport"
+			],
+			[
+				"abs",
+				"absError\tstatement"
+			],
+			[
+				"opti",
+				"optimalCombination\tfunction"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "main.py",
+			"settings":
+			{
+				"buffer_size": 11884,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "player.py",
+			"settings":
+			{
+				"buffer_size": 1433,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "map.py",
+			"settings":
+			{
+				"buffer_size": 3415,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "astar.py",
+			"settings":
+			{
+				"buffer_size": 7964,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "map.txt",
+			"settings":
+			{
+				"buffer_size": 419,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Anaconda Python Builder",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Anaconda Python Builder",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Instal",
+				"Package Control: Install Package"
+			],
+			[
+				"Remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"SideBar",
+				"View: Toggle Open Files in Side Bar"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"REMOVE",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: L",
+				"Package Control: List Packages"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 412.0
+	},
+	"console":
+	{
+		"height": 146.0,
+		"history":
+		[
+			"sublime.log_input(True)",
+			"bye",
+			"quit",
+			"exit()",
+			"exit",
+			"asd",
+			"sublime.log_input(False)",
+			"print(xD)",
+			"sublime.log_input(True)",
+			"import socket; socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((\"localhost\", 51788))",
+			"ASD",
+			"import socket; socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((\"localhost\", 51788))",
+			"quit",
+			"exit",
+			"exiyt",
+			"exit();",
+			"exit()",
+			"exit89",
+			"ls",
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/X/Git Proyects/Pakman"
+	],
+	"file_history":
+	[
+		"/X/Downloads/pain.mirror",
+		"/C/Users/JuanPablo/Documents/MirrorLayers/statue_input/torment.mirror",
+		"/C/Users/JuanPablo/Documents/MirrorLayers/statue_output/torment.mirror",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/X/Tesis/sccp.k",
+		"/X/Tesis/test1.k",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/Groupie/groupie.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/groupie.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Default (Windows).sublime-keymap",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/Side Bar.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/X/order.py",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/documentation/ref-manual.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-4.0.0/k/documentation/ref-manual.log",
+		"/X/documentation/ref-manual.log",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/documentation/ref-manual.log",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/README.md",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/2_imp/lesson_5/imp.pdf",
+		"/X/Git Proyects/Pakman/spritesheet.py",
+		"/X/Git Proyects/Pakman/map.py",
+		"/X/Git Proyects/Pakman/astar.py",
+		"/X/Git Proyects/Pakman/player.py",
+		"/X/Git Proyects/Pakman/main.py",
+		"/X/Git Proyects/Pakman/spriteStripAnim.py",
+		"/X/Git Proyects/Pakman/spriteSheet2.png",
+		"/X/Git Proyects/Pakman/spriteSheet.png",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_9/lambda.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/include/io/io.k",
+		"/X/Tesis/sccp-syntax.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_1/README.md",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_1/lambda.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/include/k-prelude.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-4.0.0/k/include/io/io.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/include/documentation.k",
+		"/X/Google Drive/IA videojuegos/AStar/a star pathfinder v. 1.92/Visual C++ Version/Demo 1 - Basics/main.cpp",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/2_imp/lesson_4/imp.k",
+		"/X/Google Drive/Interaccion y Sonido/tarea Openmusic.lisp",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_2/lambda.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_4/lambda.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_3/lambda.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_7/tests/factorial-let.lambda.out",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_7/tests/factorial-let.lambda",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_7/lambda.k",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/documentation/k.sty",
+		"/X/Google Drive/Investigación Reescritura/kframework/k-distribution-3.6/k/tutorial/1_k/1_lambda/lesson_2.5/lambda.k",
+		"/X/Git Proyects/Pro---Industries/pronostics.py",
+		"/X/Git Proyects/Pro---Industries/Pro-Industries.py",
+		"/X/Google Drive/Interaccion y Sonido/main.c",
+		"/X/Downloads/freealut-master/freealut-master/default/CMakeFiles/CMakeError.log",
+		"/C/Users/JuanPablo/Desktop/alut.h",
+		"/X/Downloads/openal-soft-1.18.1-bin/openal-soft-1.18.1-bin/include/AL/al.h",
+		"/C/Program Files (x86)/OpenAL 1.1 SDK/libs/Win64/OpenAL32.lib",
+		"/X/Downloads/S1567832610000160.bib",
+		"/X/Google Drive/Web/apis_with_flask/apis_with_flask/apis_with_flask/www/app.py",
+		"/X/Downloads/Dead Or Alive 5 Ultimate [MULTI][XBOX360][Region Free][XDG3][COMPLEX][WwW.GamesTorrents.CoM]/complex-deadoralive/complex-deadoralive/complex-dead.or.alive.ultimate.dvd",
+		"/C/Users/JuanPablo/.android/avd/Cucha3000_API_23.avd/config.ini",
+		"/X/Downloads/adv350kb/read.me",
+		"/X/Google Drive/Imágen e Ilustración Digital/inDesign/revista.html",
+		"/X/Google Drive/Web/hojaDeVidaJPMN.html",
+		"/X/Google Drive/Web/script.js",
+		"/X/Google Drive/Web/dayStyle.css",
+		"/X/Google Drive/Web/hojaDeVidaJPMN.css",
+		"/X/Google Drive/Web/ajax_examples.tgz",
+		"/X/Google Drive/Web/css.tgz",
+		"/X/Google Drive/Web/Ember.js.gslides",
+		"/X/Google Drive/Web/ember-quickstart.rar",
+		"/X/Google Drive/Web/crossword.zip",
+		"/X/Google Drive/Web/ep_naturalblack.zip",
+		"/X/Google Drive/Web/foto2.jpg",
+		"/X/Google Drive/Web/javascript.tgz",
+		"/X/Google Drive/Web/nightStyle.css",
+		"/X/Google Drive/Web/old_moon.zip",
+		"/X/Google Drive/Web/requestsHTTP.py",
+		"/X/Google Drive/Web/traffic.dump",
+		"/X/Google Drive/Web/zwartevilt.zip",
+		"/X/Google Drive/Web/foto.jpeg",
+		"/X/Git Proyects/Pro---Industries/plans.py",
+		"/X/Dropbox/Universidad/Semestre 6/ADA/Tarea 3/forest/forest.py",
+		"/X/Downloads/DemoXML.sql",
+		"//192.168.250.4/alumnos/alumno5/pedido.xml",
+		"//192.168.250.4/alumnos/alumno5/factura.xml",
+		"/X/Downloads/fp-c/fp-c/testdata/fp-c.in",
+		"/X/Downloads/GeoGebra en línea.ggb",
+		"/X/Dropbox/Universidad/Semestre 6/ADA/Tarea 3/guess/guess.py",
+		"/X/Dropbox/Universidad/Semestre 6/ADA/Tarea 3/money/money.py",
+		"/X/Dropbox/Universidad/Semestre 6/ADA/Tarea 5/gas/gas.py",
+		"/X/Dropbox/Universidad/Semestre 6/ADA/Tarea 5/annoying/annoyingF.py",
+		"/X/Dropbox/Universidad/Semestre 6/ADA/Tarea 5/annoying/annoying.py",
+		"/X/Git Proyects/Pro---Industries/machines.py",
+		"/X/Git Proyects/Pro---Industries/structure.py",
+		"/X/Git Proyects/Pro---Industries/Pro-Industries.spec",
+		"/X/Git Proyects/Pro---Industries/csvTest.csv",
+		"/X/Git Proyects/Pro---Industries/filesSupport.py",
+		"/X/Git Proyects/Pro---Industries/lala.py",
+		"/X/Git Proyects/Pro---Industries/testPlan.csv",
+		"/X/Git Proyects/Pro---Industries/main.py",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/Lib/site-packages/numpy/__init__.py",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/Lib/site-packages/numpy-1.12.1+mkl.dist-info/WHEEL",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/Lib/site-packages/numpy/core/__init__.py",
+		"/X/Git Proyects/Pro---Industries/test.py",
+		"/X/Git Proyects/Pro---Industries/test.csv",
+		"/X/test/test.py",
+		"/X/test/csv.py",
+		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/MainActivity.java",
+		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/adminSQLiteOpenHelper.java",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/messagebox.py",
+		"/X/Python test/hello.py",
+		"/X/Python test/hello.spec",
+		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Preferences.sublime-settings",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/site-packages/PIL/ImageTk.py",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/site-packages/PIL/Image.py",
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/__init__.py",
+		"/X/Google Drive/Web/css/css/css/css_link_buttons/index.html",
+		"/X/Google Drive/Web/css/css/css/css_link_buttons/style.css",
+		"/X/Google Drive/Bases 2/sqldeveloper/productos.csv",
+		"/X/Google Drive/Web/ajax_examples/ajax_examples/ajax/real_application_ajax/script.js",
+		"/X/Google Drive/Web/ajax_examples/ajax_examples/ajax/basic_example_asynchronous/data.txt",
+		"/X/Google Drive/Web/ajax_examples/ajax_examples/ajax/basic_example_asynchronous/script.js",
+		"/X/Google Drive/Web/ajax_examples/ajax_examples/ajax/basic_example_asynchronous/index.html",
+		"/X/Google Drive/Web/css/css/css/css_link_buttons/lab_instructions.txt",
+		"/X/Juegos/Brutal_Doom_20b_Hell_on_Earth_Starter_Pack/Brutal Doom - Hell on Earth Starter Pack/gzdoom.ini",
+		"/X/Juegos/Brutal_Doom_20b_Hell_on_Earth_Starter_Pack/Brutal Doom - Hell on Earth Starter Pack/gzdoom-JuanPablo.ini",
+		"/X/Google Drive/Anteproyecto/formato-anteproyecto/formato-anteproyecto/anteproyecto.tex",
+		"/X/Juegos/gzdoom-bin-2-4-0-x64/gzdoom.pk3"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"pep"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "main.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11884,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9705,
+								9705
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3623.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "player.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1433,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								355,
+								355
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 126.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "map.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3415,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1863,
+								1863
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 582.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "astar.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7964,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2085,
+								2085
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1890.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "map.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 419,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								54,
+								54
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 183.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "pakmanSublime.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 104.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 223.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 2
+	}
+}

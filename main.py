@@ -20,7 +20,7 @@ class Game():
     Class created to store the most used game methods
     """
     black = 0, 0, 0
-    playersCount = 2
+    #playersCount = 2
     def __init__(self):
 
 
@@ -31,49 +31,69 @@ class Game():
             self.ratio = 9/16
         else:
             self.ratio = 1
+
+        #Default width
         self.width = 600
         self.height = int(self.width * self.ratio)
         size = self.width, self.height
         self.screen = pygame.display.set_mode(size)
-        self.cellSize = 50
-        self.gameMap = map.Map()
 
+        #Cell size in pixels
+        self.cellSize = 50
+        self.gameMap = map.Map("map.txt")
+
+        self.playersCount = self.gameMap.playersCount
         #Uncomment to print map
         #for row in self.gameMap.matrix:
             #print(row)
 
+        #Load sprites
         self.loadSpriteSheet()
         self.charsPos = self.getCharsPos() #Characters top-left edge position
         print(self.charsPos) 
         self.charsPosCenter = self.getCharPosCenter() #Characters center position
 
+        #Draw map based on the gameMap
         self.background = self.drawMap()
         
 
-        for i in self.gameMap.matrix:
-            print(i)
-        print("--------------------------------")
-        for i in self.gameMap.getAStarMap():
-            print(i)
         self.AStarMap = self.gameMap.getAStarMap()
+
+        #There are at least 2 players always
         self.players = [player.msPakman(), player.ghost()]
 
+        #Add additional players/ghosts
+        for i in range(2,self.playersCount):
+            self.players.append(player.ghost)
 
 
-        self.path = astar.pathFind(self.AStarMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
-        self.path = astar.translatePath(self.path)
+        #Find path to follow Ms. Pakman
+        self.path = self.calcPath()
 
-        print(self.path)
+        #Uncomment to print calculated path
+
+        #print(self.path)
+        #Update players logical position based on the position in the drawn map
         for p in range(len(self.players)):
             self.players[p].setPos(*self.charsPos[p])
 
-        self.ghostOldPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
-        self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+        #Initial ghost position in cells 
+        self.ghostOldPos = self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+        
+        #If there is a path between Ms. Pakman and the ghost the direction is updated and the path is consumed
         if(self.path):
             self.players[1].changeDir(int(self.path[0]))
-        self.path=self.path[1:]
+            self.path=self.path[1:]
         #self.createEvents()
         self.infiniteLoop()
+
+    def calcPath(self):
+        """
+        Calculates path and translates it to being compatible with the actual map
+        """
+        path = astar.pathFind(self.AStarMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
+        path = astar.translatePath(path)
+        return path
 
     def infiniteLoop(self):
         """
@@ -100,6 +120,7 @@ class Game():
             #     self.movePlayer(i)
             self.updateGhostDir()
             self.movePlayer(1)
+            self.movePlayer(0)
             self.background=self.drawMap()
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
@@ -179,6 +200,16 @@ class Game():
         background = pygame.transform.smoothscale(background,(self.width,self.height))
         return background
 
+    def drawCenterPlayers(self):
+        """
+        Draws a rectangle at the center of the players for debugging purposes
+        """
+        color = "red"
+        h,w = 1, 1
+        for c in self.charsPosCenter: 
+            self.screen.blit(pygame.Surface((c[0],c[1])(h,w)).fill(color))
+
+
     def getCellFromPos(self,x,y):
         scaledCellSize = (self.cellSize * self.width)/(self.cellSize * self.gameMap.dimensions[0])
         return (int(x//scaledCellSize),int(y//scaledCellSize))
@@ -247,13 +278,15 @@ class Game():
         self.updateMapPlayer(playerId)
 
     def updateGhostDir(self):
-        if(self.path):
-            self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+        
+        self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
             
-            if(self.ghostOldPos != self.ghostPos):
-                self.ghostOldPos=self.ghostPos
+        if(True):#self.ghostOldPos != self.ghostPos):
+            self.ghostOldPos=self.ghostPos
+            self.path = self.calcPath()
+            print(self.path)
+            if(self.path):
                 self.players[1].changeDir(int(self.path[0]))
-                self.path=self.path[1:]
 
 
 game = Game()
