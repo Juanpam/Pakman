@@ -118,7 +118,7 @@ class Game():
 
             #for i,p in enumerate(self.players):
             #     self.movePlayer(i)
-            self.updateGhostDir()
+            self.updateGhostDir(1)
             self.movePlayer(1)
             self.movePlayer(0)
             self.background=self.drawMap(True)
@@ -201,6 +201,8 @@ class Game():
 
         if debug:
             background = self.drawCenterPlayers(background)
+            background = self.drawCornersPlayers(background)
+            
 
         background = pygame.transform.smoothscale(background,(self.width,self.height))
         return background
@@ -216,6 +218,26 @@ class Game():
             sRectangle.fill(color)
             background.blit(sRectangle,(c[0]-(w//2),c[1]-(h//2)))
 
+        return background
+
+    def drawCornersPlayers(self, background):
+        """
+        Draws rectangles at players corners
+        """
+        color = (0,255,0)
+        h,w = 10, 10
+
+
+        for i, c in enumerate(self.charsPos): 
+            width, height = self.images[i+3].get_width(), self.images[i+3].get_width()
+            sRectangle = pygame.Surface((h,w))
+            sRectangle.fill(color)
+            background.blit(sRectangle,(c[0],c[1]))
+            background.blit(sRectangle,(c[0]+width-w,c[1]))
+            background.blit(sRectangle,(c[0],c[1]+height-h))
+            background.blit(sRectangle,(c[0]+width-w,c[1]+height-h))
+            # background.blit(sRectangle,(c[0]+-(w//2),c[1]-(h//2)))
+            
         return background
 
 
@@ -263,39 +285,82 @@ class Game():
         #print(pos)
         self.gameMap.updateMap(*pos, 4+playerId)
 
-
-
-    def movePlayer(self,playerId):
-
+    def checkMovementPlayer(self,playerId):
         #Checks if the player can move in the desired direction using the borders and the center
         #Also, it on some cases adds the image width and heigth through the conditions
         
-        #print(self.charsPosCenter)
-        if((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+self.images[0].get_width()+1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
-            (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize)!=1) or
-            (self.players[playerId].dir==3 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize))!=1) or
-            (self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)):
-            
-            self.players[playerId].updatePos()
+        width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
 
-        # if(playerId==1):
-        #     print(self.players[playerId].dir,((self.charsPosCenter[playerId][0]//self.cellSize),self.charsPosCenter[playerId][1]//self.cellSize),"celda actual")
-        #     print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()+1)//self.cellSize), "celda abajo")
-        #     print((self.charsPosCenter[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+self.images[0].get_height()-1)//self.cellSize), "celda arriba")
+        print("Direccion: ",self.players[playerId].dir)
+        return (((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
+            (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
+            
+            ((self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
+            (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
+
+            ((self.players[playerId].dir==3 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+height+1)//self.cellSize))!=1) and
+            (self.players[playerId].dir==3 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]+height+1)//self.cellSize))!=1)) or
+            
+            ((self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)) and
+            (self.players[playerId].dir==4 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1))
+       
+
+    def movePlayer(self,playerId):
+        #print(self.charsPosCenter)
+        
+        if(self.checkMovementPlayer(playerId)):
+            self.players[playerId].updatePos()
+            
         self.charsPos[playerId] = self.players[playerId].getPos()
         self.charsPosCenter=self.getCharPosCenter()
         self.updateMapPlayer(playerId)
 
-    def updateGhostDir(self):
+    def correctDir(self, playerId):
+        """
+        Corrects ghost direction when he can't move 
+        """
+
         
-        self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
-            
-        if(True):#self.ghostOldPos != self.ghostPos):
+
+        width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
+
+        ans = None
+    
+        if (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)==1):
+            ans = 3           
+        elif (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)==1):
+            ans = 4
+        elif (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)==1):
+            ans = 3
+        elif (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)==1):
+            ans = 4
+        elif (self.players[playerId].dir==3 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+height+1)//self.cellSize))==1):
+            ans = 1
+        elif (self.players[playerId].dir==3 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]+height+1)//self.cellSize))==1):
+            ans = 2
+        elif (self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))==1):
+            ans = 1
+        elif (self.players[playerId].dir==4 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))==1):
+            ans = 2
+
+        print("Corrigiendo direccion a ", ans)
+        
+        return ans
+       
+
+
+    def updateGhostDir(self, playerId):
+        
+        self.ghostPos = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+
+        if(not self.checkMovementPlayer(1) and self.ghostOldPos==self.ghostPos):
+            self.players[1].changeDir(self.correctDir(playerId))
+        else:
             self.ghostOldPos=self.ghostPos
             self.path = self.calcPath()
             #print(self.path)
             if(self.path):
-                self.players[1].changeDir(int(self.path[0]))
+                self.players[playerId].changeDir(int(self.path[0]))
 
 
 game = Game()
