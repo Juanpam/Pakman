@@ -18,6 +18,9 @@ class genericPlayer():
 		self.posx = 0
 		self.posy = 0
 
+		self.lastSprite = 0
+		self.totalSprites = 1
+
 		#State: noVulnerable=0, Vulnerable=1, dead=2
 		self.state=0
 
@@ -58,6 +61,8 @@ class ghost(genericPlayer):
 		#states ghost: searching=1 calculating=2 
 		super().__init__()
 		self.stateGhost=1
+		self.lastSprite = 0
+		self.totalSprites = 2
 
 
 class msPakman(genericPlayer):
@@ -70,4 +75,6 @@ class msPakman(genericPlayer):
 		super().__init__()
 		self.lives=3
 		self.points=0
+		self.lastSprite = 0
+		self.totalSprites = 3
 

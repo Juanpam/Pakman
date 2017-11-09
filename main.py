@@ -65,7 +65,7 @@ class Game():
         #Add additional players/ghosts
         for i in range(2,self.playersCount):
             self.players.append(player.ghost)
-
+3
 
         #Find path to follow Ms. Pakman
         self.path = self.calcPath()
@@ -84,7 +84,10 @@ class Game():
         if(self.path):
             self.players[1].changeDir(int(self.path[0]))
             self.path=self.path[1:]
-        #self.createEvents()
+        
+        
+        self.refreshImagesTime = 100
+        self.createEvents()
         self.infiniteLoop()
 
     def calcPath(self):
@@ -93,6 +96,7 @@ class Game():
         """
         path = astar.pathFind(self.AStarMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
         path = astar.translatePath(path)
+        #print(path)
         return path
 
     def infiniteLoop(self):
@@ -103,9 +107,7 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: sys.exit()
                 if event.type == pygame.USEREVENT+1:
-                    #print("direccion vieja",self.players[1].dir)
-                    self.players[1].changeDir(self.players[1].nextDir())
-                    #print("direccion nueva",self.players[1].dir)
+                    self.updateImages()
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
                     self.players[0].changeDir(4)
                 if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
@@ -121,7 +123,7 @@ class Game():
             self.updateGhostDir(1)
             self.movePlayer(1)
             self.movePlayer(0)
-            self.background=self.drawMap(True)
+            self.background=self.drawMap(False)
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
 
@@ -136,10 +138,33 @@ class Game():
     def createEvents(self):
 
         #User event for the sprites
-        pygame.time.set_timer(pygame.USEREVENT+1,1000)
+        pygame.time.set_timer(pygame.USEREVENT+1,self.refreshImagesTime)
+
+    def updateImages(self):
+        """
+        Updates the images to be blit for each player
+        """
+
+        #spriteGroup is a direction convention fix
+
+        for i,p in enumerate(self.players):
+            if(p.dir == 2):
+                spriteGroup = 3
+            elif(p.dir == 3):
+                spriteGroup = 2
+            else:
+                spriteGroup = p.dir 
+            p.lastSprite = ((p.lastSprite + 1) % p.totalSprites) + (p.totalSprites * (spriteGroup-1))
+
+            if(i==0):
+                self.images[3] = self.msPakmanImages[p.lastSprite]
+            else:
+                print("lala",p.lastSprite,i)
+                self.images[3+i] = self.ghostImages[i-1][p.lastSprite]
+
+
 
     def loadSpriteSheet(self):
-
         #Ghosts variables
         ghostHeight, ghostWidth = 32, 32
         initialXGhost = 7
@@ -320,8 +345,6 @@ class Game():
         Corrects ghost direction when he can't move 
         """
 
-        
-
         width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
 
         ans = None
@@ -350,17 +373,24 @@ class Game():
 
 
     def updateGhostDir(self, playerId):
-        
-        self.ghostPos = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+        """
+        Updates the ghost direction
+        """
+            
+        if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+            (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-        if(not self.checkMovementPlayer(1) and self.ghostOldPos==self.ghostPos):
-            self.players[1].changeDir(self.correctDir(playerId))
-        else:
-            self.ghostOldPos=self.ghostPos
-            self.path = self.calcPath()
-            #print(self.path)
-            if(self.path):
-                self.players[playerId].changeDir(int(self.path[0]))
+            print(self.charsPos)
+            self.ghostPos = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+
+            if(not self.checkMovementPlayer(1) and self.ghostOldPos==self.ghostPos):
+                self.players[1].changeDir(self.correctDir(playerId))
+            else:
+                self.ghostOldPos=self.ghostPos
+                self.path = self.calcPath()
+                print(self.path)
+                if(self.path):
+                    self.players[playerId].changeDir(int(self.path[0]))
 
 
 game = Game()
