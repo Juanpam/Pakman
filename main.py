@@ -40,8 +40,9 @@ class Game():
 
         #Cell size in pixels
         self.cellSize = 50
-        self.gameMap = map.Map("map.txt")
-
+        mapToLoad = "map5.txt"
+        self.gameMap = map.Map(mapToLoad)
+        self.originalGameMap = map.Map(mapToLoad)
         self.playersCount = self.gameMap.playersCount
         #Uncomment to print map
         #for row in self.gameMap.matrix:
@@ -65,7 +66,6 @@ class Game():
         #Add additional players/ghosts
         for i in range(2,self.playersCount):
             self.players.append(player.ghost)
-3
 
         #Find path to follow Ms. Pakman
         self.path = self.calcPath()
@@ -123,6 +123,7 @@ class Game():
             self.updateGhostDir(1)
             self.movePlayer(1)
             self.movePlayer(0)
+            self.updateGhostsPos(1)
             self.background=self.drawMap(False)
             self.screen.fill(self.black)
             self.screen.blit(self.background, (0,0))
@@ -159,7 +160,7 @@ class Game():
             if(i==0):
                 self.images[3] = self.msPakmanImages[p.lastSprite]
             else:
-                print("lala",p.lastSprite,i)
+                #print("lala",p.lastSprite,i)
                 self.images[3+i] = self.ghostImages[i-1][p.lastSprite]
 
 
@@ -307,8 +308,17 @@ class Game():
 
         pos = ((self.charsPos[playerId][0]+(self.images[3+playerId].get_width()//2))//self.cellSize,
             (self.charsPos[playerId][1]+(self.images[3+playerId].get_height()//2))//self.cellSize)
+        
+        oldPos = self.ghostOldPos
+
         #print(pos)
-        self.gameMap.updateMap(*pos, 4+playerId)
+        
+        if(playerId == 0):
+            self.gameMap.updateMap(*pos, 4+playerId)
+            self.originalGameMap.updateMap(*pos, 4+playerId)
+        else:
+            self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
+            
 
     def checkMovementPlayer(self,playerId):
         #Checks if the player can move in the desired direction using the borders and the center
@@ -316,7 +326,7 @@ class Game():
         
         width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
 
-        print("Direccion: ",self.players[playerId].dir)
+        #print("Direccion: ",self.players[playerId].dir)
         return (((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
             (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
             
@@ -366,7 +376,7 @@ class Game():
         elif (self.players[playerId].dir==4 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))==1):
             ans = 2
 
-        print("Corrigiendo direccion a ", ans)
+        #print("Corrigiendo direccion a ", ans)
         
         return ans
        
@@ -376,21 +386,28 @@ class Game():
         """
         Updates the ghost direction
         """
-            
+           
+        #If pakman has not been catched 
         if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
             (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-            print(self.charsPos)
+            #print(self.charsPos)
             self.ghostPos = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
             if(not self.checkMovementPlayer(1) and self.ghostOldPos==self.ghostPos):
                 self.players[1].changeDir(self.correctDir(playerId))
             else:
-                self.ghostOldPos=self.ghostPos
                 self.path = self.calcPath()
-                print(self.path)
+                #print(self.path)
                 if(self.path):
                     self.players[playerId].changeDir(int(self.path[0]))
+
+    def updateGhostsPos(self, playerId):
+        """
+        Updates the ghosts pos measured on cells
+        """
+        self.ghostOldPos=self.ghostPos
+
 
 
 game = Game()
