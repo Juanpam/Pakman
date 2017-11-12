@@ -40,9 +40,13 @@ class Game():
 
         #Cell size in pixels
         self.cellSize = 50
-        mapToLoad = "map5.txt"
+
+        #Map set-up
+        mapToLoad = "map6.txt"
         self.gameMap = map.Map(mapToLoad)
         self.originalGameMap = map.Map(mapToLoad)
+        self.noObstaclesMap = self.gameMap.getNoObstaclesMap()
+        self.AStarMap = self.gameMap.getAStarMap()
         self.playersCount = self.gameMap.playersCount
         #Uncomment to print map
         #for row in self.gameMap.matrix:
@@ -56,29 +60,29 @@ class Game():
 
         #Draw map based on the gameMap
         self.background = self.drawMap()
-        
-
-        self.AStarMap = self.gameMap.getAStarMap()
 
         #There are at least 2 players always
         self.players = [player.msPakman(), player.ghost()]
 
         #Add additional players/ghosts
         for i in range(2,self.playersCount):
-            self.players.append(player.ghost)
+            self.players.append(player.ghost())
 
         #Find path to follow Ms. Pakman
         self.path = self.calcPath()
-
+        self.noObstaclesPath = self.calcPath(self.noObstaclesMap)
         #Uncomment to print calculated path
-
         #print(self.path)
+        
         #Update players logical position based on the position in the drawn map
         for p in range(len(self.players)):
             self.players[p].setPos(*self.charsPos[p])
 
         #Initial ghost position in cells 
-        self.ghostOldPos = self.ghostPos = ( self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize )
+        #Actual position is stored on the first position of each tuple on this array and old position on the second one
+        self.ghostPos = [[( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize ),
+                            ( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize )] for p in range(1,len(self.players))]
+
         
         #If there is a path between Ms. Pakman and the ghost the direction is updated and the path is consumed
         if(self.path):
@@ -90,11 +94,13 @@ class Game():
         self.createEvents()
         self.infiniteLoop()
 
-    def calcPath(self):
+    def calcPath(self, gameMap=None):
         """
         Calculates path and translates it to being compatible with the actual map
         """
-        path = astar.pathFind(self.AStarMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
+        if(not gameMap):
+            gameMap = self.AStarMap 
+        path = astar.pathFind(gameMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
         path = astar.translatePath(path)
         #print(path)
         return path
@@ -118,11 +124,11 @@ class Game():
                     self.players[0].changeDir(1)
 
 
-            #for i,p in enumerate(self.players):
-            #     self.movePlayer(i)
             self.updateGhostDir(1)
-            self.movePlayer(1)
-            self.movePlayer(0)
+            for i,p in enumerate(self.players):
+                self.movePlayer(i)
+            # self.movePlayer(1)
+            # self.movePlayer(0)
             self.updateGhostsPos(1)
             self.background=self.drawMap(False)
             self.screen.fill(self.black)
@@ -209,6 +215,14 @@ class Game():
         #         self.ghostImages[i][j] = image
 
         self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[0][0]]
+
+        ## Re arranging image order
+        temp = self.ghostImages[1]
+        self.ghostImages[1] = self.ghostImages[3]
+        self.ghostImages[3] = temp 
+        for i in range(self.playersCount-2):
+            if(i == 0):
+                self.images.append(self.ghostImages[3][0])
 
     def drawMap(self, debug=False):
 
@@ -309,7 +323,7 @@ class Game():
         pos = ((self.charsPos[playerId][0]+(self.images[3+playerId].get_width()//2))//self.cellSize,
             (self.charsPos[playerId][1]+(self.images[3+playerId].get_height()//2))//self.cellSize)
         
-        oldPos = self.ghostOldPos
+        oldPos = self.ghostPos[playerId-1][1]
 
         #print(pos)
         
@@ -387,26 +401,33 @@ class Game():
         Updates the ghost direction
         """
            
-        #If pakman has not been catched 
-        if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
-            (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
+        #For the red ghost
+        if(playerId == 1):
+            #If pakman has not been catched
+            if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+                (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-            #print(self.charsPos)
-            self.ghostPos = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+                #print(self.charsPos)
+                self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
-            if(not self.checkMovementPlayer(1) and self.ghostOldPos==self.ghostPos):
-                self.players[1].changeDir(self.correctDir(playerId))
-            else:
-                self.path = self.calcPath()
-                #print(self.path)
-                if(self.path):
-                    self.players[playerId].changeDir(int(self.path[0]))
+                if(not self.checkMovementPlayer(1) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                    self.players[1].changeDir(self.correctDir(playerId))
+                else:
+                    self.path = self.calcPath()
+                    #print(self.path)
+                    if(self.path):
+                        self.players[playerId].changeDir(int(self.path[0]))
+
+        #For the orange ghost
+        # elif(playerId == 2):
+        #     pass
 
     def updateGhostsPos(self, playerId):
         """
-        Updates the ghosts pos measured on cells
+        Updates the ghosts pos measured in cells
         """
-        self.ghostOldPos=self.ghostPos
+        self.ghostPos[playerId-1][1] = self.ghostPos[playerId-1][0] 
+
 
 
 

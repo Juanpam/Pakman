@@ -5,7 +5,6 @@ This module implements a Map class used to represent in a logic way the map in P
 """
 from random import *
 from os import path
-import string
 
 class Map():
     """
@@ -26,7 +25,7 @@ class Map():
         #2 represents a pill
         #3 represents a tomato (Big pill)
         #4 represents Ms Pakman
-        #5 represents a blue ghost
+        #5 represents a red ghost
         if(not filename):
             self.matrix = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
             for i in range(self.dimensions[0]):
@@ -93,6 +92,20 @@ class Map():
                 if(self.matrix[i][j]==1):
                     AStarMap[i][j] = 1
         return AStarMap
+
+    def getNoObstaclesMap(self):
+        """
+        Returns the same as getAStarMap but without obstacles
+        """
+
+        AStarMap = self.getAStarMap()
+        for i in range(len(AStarMap)):
+            for j in range(len(AStarMap[i])):
+                if(AStarMap[i][j] == 1):
+                    AStarMap[i][j] = 0
+
+        return AStarMap
+
 
     def updatePlayersCount(self):
         """
