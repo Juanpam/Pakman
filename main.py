@@ -56,6 +56,7 @@ class Game():
         self.noObstaclesMap = self.gameMap.getNoObstaclesMap()
         self.AStarMap = self.gameMap.getAStarMap()
         self.playersCount = self.gameMap.playersCount
+        #print("Players count", self.playersCount)
         #Uncomment to print map
         #for row in self.gameMap.matrix:
             #print(row)
@@ -84,9 +85,11 @@ class Game():
 
         #Find path to follow Ms. Pakman
         self.paths = []
-        self.paths.append(self.calcPath())
-        self.paths.append(self.calcPath(None, 2))
-        self.noObstaclesPath = self.calcPath(self.noObstaclesMap)
+        for i in range(1 ,self.playersCount):
+            self.paths.append(self.calcPath(None, i))
+        if(7 in self.gameMap.playersInMap):
+            self.noObstaclesPath = self.calcPath(self.noObstaclesMap, 3)
+        self.visibleDistance = 10
         #Uncomment to print calculated path
         #print(self.path)
         
@@ -114,11 +117,14 @@ class Game():
         
         self.gameClock = pygame.time.Clock()
 
+        self.sound = False
+        
         
         #Turn to true for some fun
-        self.metal = True
+        self.metal = False
 
         if(self.metal):
+            self.sound = True
             for i in range(self.playersCount):
                 self.players[i].spdx += 4
                 self.players[i].spdy += 4
@@ -197,18 +203,20 @@ class Game():
             pygame.display.flip()
 
             if(firstTime or not beginSoundFinished):
-                if(not self.metal):
-                    if(firstTime):
-                        pygame.mixer.music.load("pacman_beginning.wav")
-                        pygame.mixer.music.play()
-                    if(not pygame.mixer.music.get_busy()):
-                        pygame.mixer.music.load("pacman_chomp.wav")
-                        pygame.mixer.music.play(-1)
-                        beginSoundFinished = True
+                if(self.sound):
+                    if(not self.metal):
+                        if(firstTime):
+                            pygame.mixer.music.load("pacman_beginning.wav")
+                            pygame.mixer.music.play()
+                        if(not pygame.mixer.music.get_busy()):
+                            pygame.mixer.music.load("pacman_chomp.wav")
+                            pygame.mixer.music.play(-1)
+                            beginSoundFinished = True
+                    else:
+                        if(firstTime):
+                            pygame.mixer.find_channel().play(pygame.mixer.Sound("pakman_metal.wav"), -1)
                 else:
-                    if(firstTime):
-                        pygame.mixer.find_channel().play(pygame.mixer.Sound("pakman_metal.wav"), -1)
-                        
+                    beginSoundFinished = True    
                         
 
                 firstTime = False
@@ -256,7 +264,7 @@ class Game():
         spaceBetweenGhosts = 15
         intervalSizeG = spaceBetweenGhosts + ghostHeight
         gSpriteCount = 8
-        ghostsCount = 4
+        ghostsCount = 6
 
         #Ms. Pakman variables
         msPakHeight, msPakWidth = 43, 43
@@ -294,12 +302,15 @@ class Game():
         self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[0][0]]
 
         ## Re arranging image order
-        # temp = self.ghostImages[1]
-        # self.ghostImages[1] = self.ghostImages[3]
-        # self.ghostImages[3] = temp
+        #Makes second player purple
+        self.ghostImages[1], self.ghostImages[5] = self.ghostImages[5], self.ghostImages[1]  
+        self.ghostImages[2], self.ghostImages[3] = self.ghostImages[3], self.ghostImages[2]  
+        
         for i in range(self.playersCount-2):
             if(i == 0):
                 self.images.append(self.ghostImages[1][0])
+            elif(i == 1):
+                self.images.append(self.ghostImages[2][0])
 
     def drawMap(self, debug=False):
 
@@ -390,7 +401,7 @@ class Game():
     def getCharPosCenter(self):
         charPosCenter = []
         for i in range(len(self.charsPos)):
-            #print(i)
+            #print("charposcenter",i)
             charPosCenter.append((self.charsPos[i][0]+(self.images[3+i].get_width()//2),self.charsPos[i][1]+(self.images[3+i].get_height()//2)))
         return charPosCenter
 
@@ -489,8 +500,8 @@ class Game():
         """
         Updates the ghost direction
         """
-        #For the red ghost
-        if(playerId == 1):
+        #For the red and the purple ghost
+        if(playerId <= 2):
             #If pakman has not been catched
             if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
                 (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
@@ -501,27 +512,46 @@ class Game():
                 if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
                     self.players[playerId].changeDir(self.correctDir(playerId))
                 else:
-                    self.paths[playerId - 1] = self.calcPath()
+                    self.paths[playerId - 1] = self.calcPath(None, playerId)
                     #print(self.path)
                     if(self.paths[playerId - 1]):
                         self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+
+        #For the purple ghost
+        # elif(playerId == 2):
+        #     #If pakman has not been catched
+        #     if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+        #         (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
+
+        #         #print(self.charsPos)
+        #         self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+
+        #         if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+        #             self.players[playerId].changeDir(self.correctDir(playerId))
+        #         else:
+        #             self.paths[playerId - 1] = self.calcPath(None, 2)
+        #             #print(self.path)
+        #             if(self.paths[playerId - 1]):
+        #                 self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
         #For the orange ghost
-        elif(playerId == 2):
+        elif(playerId == 3):
             #If pakman has not been catched
             if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
                 (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-                #print(self.charsPos)
                 self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
+                #If the ghost is not able to move then correct it's direction
                 if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
-                    self.players[playerId].changeDir(self.correctDir(playerId))
+                        self.players[playerId].changeDir(self.correctDir(playerId))
                 else:
-                    self.paths[playerId - 1] = self.calcPath(None, 2)
-                    #print(self.path)
-                    if(self.paths[playerId - 1]):
-                        self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+                    self.paths[playerId - 1] = self.calcPath(None, playerId)
+                    self.noObstaclesPath = self.calcPath(self.noObstaclesMap, playerId)
+                    if(len(self.noObstaclesPath) < self.visibleDistance and 
+                        self.paths[playerId - 1] == self.noObstaclesPath):
+                        if(self.paths[playerId - 1]):
+                            self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
     def updatePlayerPos(self, playerId):
         """
