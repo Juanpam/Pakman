@@ -22,6 +22,7 @@ class Game():
     Class created to store the most used game methods
     """
     black = 0, 0, 0
+    white = 255, 255, 255
     #playersCount = 2
     def __init__(self):
 
@@ -66,6 +67,7 @@ class Game():
         self.charsPosCenter = self.getCharPosCenter() #Characters center position
 
         #Draw map based on the gameMap
+        self.color = self.black
         self.background = self.drawMap()
 
         #There are at least 2 players always
@@ -112,7 +114,7 @@ class Game():
         
         self.gameClock = pygame.time.Clock()
 
-
+        
         #Turn to true for some fun
         self.metal = True
 
@@ -145,12 +147,15 @@ class Game():
         """
         firstTime = True
         beginSoundFinished = False
+        
         while True:
             if(firstTime or beginSoundFinished):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+1:
                         self.updateImages()
+                    if event.type == pygame.USEREVENT+2:
+                        self.color = self.white if self.color == self.black else self.black
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
                         self.players[0].changeDir(4)
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
@@ -169,7 +174,7 @@ class Game():
                 # self.movePlayer(1)
                 # self.movePlayer(0)
                 self.background=self.drawMap(False)
-                self.screen.fill(self.black)
+                self.screen.fill(self.color)
                 self.screen.blit(self.background, (0,0))
 
                 # self.screen.blit(self.msPakmanImages[self.imageId],(50*4,50*4))
@@ -183,6 +188,7 @@ class Game():
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+2:
+                        pygame.time.set_timer(pygame.USEREVENT+2, 100)
                         chomp = pygame.mixer.Sound("pacman_chomp.wav")
                         chomp.set_volume(0.4)
                         pygame.mixer.find_channel().play(chomp, -1)
@@ -211,7 +217,7 @@ class Game():
             # for row in self.gameMap.matrix:
             #     print(row)
             #Uncomment for a slow game play useful for debuggin
-            #self.gameClock.tick(120)
+            self.gameClock.tick(120)
 
     def createEvents(self):
 
@@ -299,7 +305,7 @@ class Game():
 
         background = pygame.Surface((self.cellSize*self.gameMap.dimensions[0],self.cellSize*self.gameMap.dimensions[1]))
             
-        background.fill(self.black)
+        background.fill(self.color)
 
         for i in range(self.gameMap.dimensions[0]):
             for j in range(self.gameMap.dimensions[1]):
