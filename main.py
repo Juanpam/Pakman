@@ -11,8 +11,10 @@ Makes use of the Pygame and Sys module.
 """
 
 
-import sys, pygame, spritesheet, map, player, astar
-pygame.init()
+import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os
+
+
+
 
 
 class Game():
@@ -25,6 +27,11 @@ class Game():
 
 
         #Configuration variables
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        pygame.init()
+        pygame.display.set_caption("Pakman - 2017")
+        pygame.display.set_icon(pygame.image.load("icon.png"))
+
         #Setting screen proportions
         self.wideScreen = False
         if(self.wideScreen):
@@ -33,7 +40,7 @@ class Game():
             self.ratio = 1
 
         #Default width
-        self.width = 600
+        self.width = 700
         self.height = int(self.width * self.ratio)
         size = self.width, self.height
         self.screen = pygame.display.set_mode(size)
@@ -68,8 +75,15 @@ class Game():
         for i in range(2,self.playersCount):
             self.players.append(player.ghost())
 
+        #Decrease speed
+        for i in range(1,self.playersCount):
+            self.players[i].spdx -= 1
+            self.players[i].spdy -= 1
+
         #Find path to follow Ms. Pakman
-        self.path = self.calcPath()
+        self.paths = []
+        self.paths.append(self.calcPath())
+        self.paths.append(self.calcPath(None, 2))
         self.noObstaclesPath = self.calcPath(self.noObstaclesMap)
         #Uncomment to print calculated path
         #print(self.path)
@@ -83,24 +97,44 @@ class Game():
         self.ghostPos = [[( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize ),
                             ( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize )] for p in range(1,len(self.players))]
 
+        self.playerPos = [( self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize ),
+                            ( self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize )]
+
         
         #If there is a path between Ms. Pakman and the ghost the direction is updated and the path is consumed
-        if(self.path):
-            self.players[1].changeDir(int(self.path[0]))
-            self.path=self.path[1:]
+        if(self.paths[0]):
+            self.players[1].changeDir(int(self.paths[0][0]))
+            self.paths[0]=self.paths[0][1:]
         
-        
+        #Initialize text module
+        pygame.freetype.init()
         self.refreshImagesTime = 100
+        
+        self.gameClock = pygame.time.Clock()
+
+
+        #Turn to true for some fun
+        self.metal = True
+
+        if(self.metal):
+            for i in range(self.playersCount):
+                self.players[i].spdx += 4
+                self.players[i].spdy += 4
+            self.refreshImagesTime = 70
+            pygame.time.set_timer(pygame.USEREVENT+2, 5500)
+        
         self.createEvents()
         self.infiniteLoop()
 
-    def calcPath(self, gameMap=None):
+    def calcPath(self, gameMap=None, playerId=None):
         """
         Calculates path and translates it to being compatible with the actual map
         """
         if(not gameMap):
-            gameMap = self.AStarMap 
-        path = astar.pathFind(gameMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[1][0]//self.cellSize,self.charsPosCenter[1][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
+            gameMap = self.AStarMap
+        if(not playerId):
+            playerId = 1
+        path = astar.pathFind(gameMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
         path = astar.translatePath(path)
         #print(path)
         return path
@@ -109,38 +143,75 @@ class Game():
         """
         Infinite loop for the game
         """
+        firstTime = True
+        beginSoundFinished = False
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT: sys.exit()
-                if event.type == pygame.USEREVENT+1:
-                    self.updateImages()
-                if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
-                    self.players[0].changeDir(4)
-                if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
-                    self.players[0].changeDir(3)
-                if event.type == pygame.KEYDOWN and event.key==pygame.K_LEFT:
-                    self.players[0].changeDir(2)
-                if event.type == pygame.KEYDOWN and event.key==pygame.K_RIGHT:
-                    self.players[0].changeDir(1)
+            if(firstTime or beginSoundFinished):
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT: sys.exit()
+                    if event.type == pygame.USEREVENT+1:
+                        self.updateImages()
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
+                        self.players[0].changeDir(4)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
+                        self.players[0].changeDir(3)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_LEFT:
+                        self.players[0].changeDir(2)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_RIGHT:
+                        self.players[0].changeDir(1)
 
 
-            self.updateGhostDir(1)
-            for i,p in enumerate(self.players):
-                self.movePlayer(i)
-            # self.movePlayer(1)
-            # self.movePlayer(0)
-            self.updateGhostsPos(1)
-            self.background=self.drawMap(False)
-            self.screen.fill(self.black)
-            self.screen.blit(self.background, (0,0))
+                
+                for i,p in enumerate(self.players):
+                    self.updateGhostDir(i)
+                    self.movePlayer(i)
+                    self.updatePlayerPos(i)
+                # self.movePlayer(1)
+                # self.movePlayer(0)
+                self.background=self.drawMap(False)
+                self.screen.fill(self.black)
+                self.screen.blit(self.background, (0,0))
 
-            # self.screen.blit(self.msPakmanImages[self.imageId],(50*4,50*4))
-            # for j in range(len(self.ghostImages)):
-            #     for i in range(len(self.ghostImages[j])):
-            #         self.screen.blit(self.ghostImages[j][self.imageId],(50*i,50*j))
-            #print(pygame.mouse.get_pos(), self.charsPos)
-            # print(self.charsPos)
+                # self.screen.blit(self.msPakmanImages[self.imageId],(50*4,50*4))
+                # for j in range(len(self.ghostImages)):
+                #     for i in range(len(self.ghostImages[j])):
+                #         self.screen.blit(self.ghostImages[j][self.imageId],(50*i,50*j))
+                #print(pygame.mouse.get_pos(), self.charsPos)
+                # print(self.charsPos)
+            else:
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT: sys.exit()
+                    if event.type == pygame.USEREVENT+2:
+                        chomp = pygame.mixer.Sound("pacman_chomp.wav")
+                        chomp.set_volume(0.4)
+                        pygame.mixer.find_channel().play(chomp, -1)
+                        beginSoundFinished = True
+            
             pygame.display.flip()
+
+            if(firstTime or not beginSoundFinished):
+                if(not self.metal):
+                    if(firstTime):
+                        pygame.mixer.music.load("pacman_beginning.wav")
+                        pygame.mixer.music.play()
+                    if(not pygame.mixer.music.get_busy()):
+                        pygame.mixer.music.load("pacman_chomp.wav")
+                        pygame.mixer.music.play(-1)
+                        beginSoundFinished = True
+                else:
+                    if(firstTime):
+                        pygame.mixer.find_channel().play(pygame.mixer.Sound("pakman_metal.wav"), -1)
+                        
+                        
+
+                firstTime = False
+            #Uncomment to print map
+            # print("Here is the map")
+            # for row in self.gameMap.matrix:
+            #     print(row)
+            #Uncomment for a slow game play useful for debuggin
+            #self.gameClock.tick(120)
 
     def createEvents(self):
 
@@ -217,12 +288,12 @@ class Game():
         self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[0][0]]
 
         ## Re arranging image order
-        temp = self.ghostImages[1]
-        self.ghostImages[1] = self.ghostImages[3]
-        self.ghostImages[3] = temp 
+        # temp = self.ghostImages[1]
+        # self.ghostImages[1] = self.ghostImages[3]
+        # self.ghostImages[3] = temp
         for i in range(self.playersCount-2):
             if(i == 0):
-                self.images.append(self.ghostImages[3][0])
+                self.images.append(self.ghostImages[1][0])
 
     def drawMap(self, debug=False):
 
@@ -292,12 +363,13 @@ class Game():
 
     def drawCharacters(self,background):
         
-        for i in range(self.gameMap.dimensions[0]):
-            for j in range(self.gameMap.dimensions[1]):
-                if(self.gameMap.getCell(i,j)>=4 and self.gameMap.getCell(i,j)<9):
-                    charId = self.gameMap.getCell(i,j) #Which character are we painting
-                    #print(charId,self.charsPos,self.cellSize*i, self.cellSize*j,pygame.mouse.get_pos())
-                    background.blit(self.images[charId-1], (self.charsPos[charId-4][0], self.charsPos[charId-4][1]))
+        # for i in range(self.gameMap.dimensions[0]):
+        #     for j in range(self.gameMap.dimensions[1]):
+        #         if(self.gameMap.getCell(i,j)>=4 and self.gameMap.getCell(i,j)<9):
+        #             charId = self.gameMap.getCell(i,j) #Which character are we painting
+        #             #print(charId,self.charsPos,self.cellSize*i, self.cellSize*j,pygame.mouse.get_pos())
+        for charId in self.gameMap.playersInMap:
+            background.blit(self.images[charId-1], (self.charsPos[charId-4][0], self.charsPos[charId-4][1]))
         return background
 
     def getCharsPos(self):
@@ -320,18 +392,26 @@ class Game():
         #Updates the player position on the logical map using the default cellsize
 
 
-        pos = ((self.charsPos[playerId][0]+(self.images[3+playerId].get_width()//2))//self.cellSize,
-            (self.charsPos[playerId][1]+(self.images[3+playerId].get_height()//2))//self.cellSize)
-        
-        oldPos = self.ghostPos[playerId-1][1]
+        if(playerId == 0):
+            pos = self.playerPos[0]
+            oldPos = self.playerPos[1]
+        # pos = ((self.charsPos[playerId][0]+(self.images[3+playerId].get_width()//2))//self.cellSize,
+        #     (self.charsPos[playerId][1]+(self.images[3+playerId].get_height()//2))//self.cellSize)
+        else:
+            pos = self.ghostPos[playerId-1][0]
+            oldPos = self.ghostPos[playerId-1][1]
 
         #print(pos)
         
         if(playerId == 0):
+            if(self.gameMap.getCell(*pos) < 4):
+                self.originalGameMap.updateMap(*pos, 4+playerId)
             self.gameMap.updateMap(*pos, 4+playerId)
-            self.originalGameMap.updateMap(*pos, 4+playerId)
+            if(pos != oldPos):
+                self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
         else:
-            self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
+            if(self.gameMap.getCell(*oldPos) < 4):
+                self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
             
 
     def checkMovementPlayer(self,playerId):
@@ -340,7 +420,7 @@ class Game():
         
         width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
 
-        #print("Direccion: ",self.players[playerId].dir)
+        #print("Direccion: ",self.players[playerId].dir, "playerId", 2)
         return (((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
             (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
             
@@ -359,6 +439,10 @@ class Game():
         
         if(self.checkMovementPlayer(playerId)):
             self.players[playerId].updatePos()
+            if(playerId == 0):
+                #print("Cambiando posicion personaje")
+                self.playerPos[0] = (self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+        
             
         self.charsPos[playerId] = self.players[playerId].getPos()
         self.charsPosCenter=self.getCharPosCenter()
@@ -368,7 +452,6 @@ class Game():
         """
         Corrects ghost direction when he can't move 
         """
-
         width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
 
         ans = None
@@ -390,7 +473,7 @@ class Game():
         elif (self.players[playerId].dir==4 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))==1):
             ans = 2
 
-        #print("Corrigiendo direccion a ", ans)
+        #print("Corrigiendo direccion a ", ans, "playerId", playerId)
         
         return ans
        
@@ -400,7 +483,6 @@ class Game():
         """
         Updates the ghost direction
         """
-           
         #For the red ghost
         if(playerId == 1):
             #If pakman has not been catched
@@ -410,23 +492,39 @@ class Game():
                 #print(self.charsPos)
                 self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
-                if(not self.checkMovementPlayer(1) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
-                    self.players[1].changeDir(self.correctDir(playerId))
+                if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                    self.players[playerId].changeDir(self.correctDir(playerId))
                 else:
-                    self.path = self.calcPath()
+                    self.paths[playerId - 1] = self.calcPath()
                     #print(self.path)
-                    if(self.path):
-                        self.players[playerId].changeDir(int(self.path[0]))
+                    if(self.paths[playerId - 1]):
+                        self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
         #For the orange ghost
-        # elif(playerId == 2):
-        #     pass
+        elif(playerId == 2):
+            #If pakman has not been catched
+            if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+                (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-    def updateGhostsPos(self, playerId):
+                #print(self.charsPos)
+                self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+
+                if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                    self.players[playerId].changeDir(self.correctDir(playerId))
+                else:
+                    self.paths[playerId - 1] = self.calcPath(None, 2)
+                    #print(self.path)
+                    if(self.paths[playerId - 1]):
+                        self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+
+    def updatePlayerPos(self, playerId):
         """
-        Updates the ghosts pos measured in cells
+        Updates the players pos measured in cells
         """
-        self.ghostPos[playerId-1][1] = self.ghostPos[playerId-1][0] 
+        if(playerId == 0):
+            self.playerPos[1] = self.playerPos[0]
+        else:  
+            self.ghostPos[playerId-1][1] = self.ghostPos[playerId-1][0] 
 
 
 

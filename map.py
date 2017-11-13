@@ -111,8 +111,10 @@ class Map():
         """
         Updates the players count using the current map
         """
+        self.playersInMap = []
         self.playersCount = 0
         for row in self.matrix:
             for cell in row:
-                if(cell >= 4): 
+                if(cell >= 4):
+                    self.playersInMap.append(cell)
                     self.playersCount += 1

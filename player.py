@@ -11,10 +11,11 @@ class genericPlayer():
 
 	def __init__(self):
 		#Direction: Right=1, Left=2, Down=3, Up=4
-		self.dir=1
-		self.spdx=4
-		self.spdy=4
-		
+		self.dir = 1
+		self.spdx = 5
+		self.spdy = 5
+
+
 		self.posx = 0
 		self.posy = 0
 
