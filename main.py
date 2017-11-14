@@ -11,7 +11,8 @@ Makes use of the Pygame and Sys module.
 """
 
 
-import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os
+import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os 
+from dforest import dforest
 
 
 
@@ -50,7 +51,7 @@ class Game():
         self.cellSize = 50
 
         #Map set-up
-        mapToLoad = "map6.txt"
+        mapToLoad = "map7.txt"
         self.gameMap = map.Map(mapToLoad)
         self.originalGameMap = map.Map(mapToLoad)
         self.noObstaclesMap = self.gameMap.getNoObstaclesMap()
@@ -90,6 +91,12 @@ class Game():
         if(7 in self.gameMap.playersInMap):
             self.noObstaclesPath = self.calcPath(self.noObstaclesMap, 3)
         self.visibleDistance = 10
+
+        #Create forest object
+        self.forest = dforest(self.gameMap.dimensions[0]*self.gameMap.dimensions[1])
+        self.pacDotPos = self.findPacDotesZones()
+        self.indexPacDot = 0
+
         #Uncomment to print calculated path
         #print(self.path)
         
@@ -110,6 +117,10 @@ class Game():
         if(self.paths[0]):
             self.players[1].changeDir(int(self.paths[0][0]))
             self.paths[0]=self.paths[0][1:]
+
+        
+
+
         
         #Initialize text module
         pygame.freetype.init()
@@ -117,6 +128,7 @@ class Game():
         
         self.gameClock = pygame.time.Clock()
 
+        #Turns on or off the sound
         self.sound = False
         
         
@@ -134,7 +146,49 @@ class Game():
         self.createEvents()
         self.infiniteLoop()
 
-    def calcPath(self, gameMap=None, playerId=None):
+
+    def updatePacDoteZone(self):
+        self.forest = dforest(self.gameMap.dimensions[0]*self.gameMap.dimensions[1])
+        new = self.findPacDotesZones()
+        if(new != self.pacDotPos):
+            self.pacDotPos = new
+            self.indexPacDot = 0
+            #print("CAMBIEEEE", self.pacDotPos)
+
+    def findPacDotesZones(self):
+        #Arrays used to check cells adjacency
+        dx = [0, 1, 0, -1]
+        dy = [-1, 0, 1, 0]
+        rows = self.gameMap.dimensions[1]
+        cols = self.gameMap.dimensions[0]
+        # for r in self.gameMap.matrix:
+        #     print(r)
+        for i in range(rows):
+            for j in range(cols):
+                if(self.gameMap.getCell(j,i) == 2):
+                    for k in range(len(dx)):
+                        u,v = j+dx[k], i+dy[k]
+                        if(0 <= u < cols and 
+                            0 <= v < rows and 
+                            self.gameMap.getCell(u,v) == 2):
+                            self.forest.union(cols*i+j,cols*v+u)
+                else:
+                    self.forest.setCount(cols*i+j, 0)
+
+        m = self.forest.toMatrix(self.gameMap.dimensions[1])
+        pacDotPositions = []
+        maxCountParent = self.forest.maxCountParent()
+        #print("maxCountParent", maxCountParent)
+        for r in range(rows):
+            for c in range(cols):
+                if(m[r][c] == maxCountParent):
+                    pacDotPositions.append((c,r))
+
+        return pacDotPositions
+
+
+
+    def calcPath(self, gameMap=None, playerId=None, destination = None):
         """
         Calculates path and translates it to being compatible with the actual map
         """
@@ -142,7 +196,9 @@ class Game():
             gameMap = self.AStarMap
         if(not playerId):
             playerId = 1
-        path = astar.pathFind(gameMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize,self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
+        if(not destination):
+            destination = (self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize)
+        path = astar.pathFind(gameMap,astar.directions,astar.dx,astar.dy,self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize,*destination)
         path = astar.translatePath(path)
         #print(path)
         return path
@@ -182,6 +238,7 @@ class Game():
                 self.background=self.drawMap(False)
                 self.screen.fill(self.color)
                 self.screen.blit(self.background, (0,0))
+
 
                 # self.screen.blit(self.msPakmanImages[self.imageId],(50*4,50*4))
                 # for j in range(len(self.ghostImages)):
@@ -264,7 +321,7 @@ class Game():
         spaceBetweenGhosts = 15
         intervalSizeG = spaceBetweenGhosts + ghostHeight
         gSpriteCount = 8
-        ghostsCount = 6
+        ghostsCount = 7
 
         #Ms. Pakman variables
         msPakHeight, msPakWidth = 43, 43
@@ -311,6 +368,8 @@ class Game():
                 self.images.append(self.ghostImages[1][0])
             elif(i == 1):
                 self.images.append(self.ghostImages[2][0])
+            elif(i == 2):
+                self.images.append(self.ghostImages[3][0])
 
     def drawMap(self, debug=False):
 
@@ -412,6 +471,7 @@ class Game():
         if(playerId == 0):
             pos = self.playerPos[0]
             oldPos = self.playerPos[1]
+            #print("pos, oldPos",pos,oldPos)
         # pos = ((self.charsPos[playerId][0]+(self.images[3+playerId].get_width()//2))//self.cellSize,
         #     (self.charsPos[playerId][1]+(self.images[3+playerId].get_height()//2))//self.cellSize)
         else:
@@ -421,11 +481,16 @@ class Game():
         #print(pos)
         
         if(playerId == 0):
+            cell = self.gameMap.getCell(*pos) 
             if(self.gameMap.getCell(*pos) < 4):
-                self.originalGameMap.updateMap(*pos, 4+playerId)
-            self.gameMap.updateMap(*pos, 4+playerId)
+                self.originalGameMap.updateMap(*pos, 0)
+                self.gameMap.updateMap(*pos, 4+playerId)
             if(pos != oldPos):
+                #print("entre aquiii")
                 self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
+            if(cell == 2 and pos in self.pacDotPos):
+                    #print("ACTUALICEEE")
+                    self.updatePacDoteZone()
         else:
             if(self.gameMap.getCell(*oldPos) < 4):
                 self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
@@ -552,6 +617,36 @@ class Game():
                         self.paths[playerId - 1] == self.noObstaclesPath):
                         if(self.paths[playerId - 1]):
                             self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+
+        elif(playerId == 4):
+            #print("Actualizando direccion")
+            #print("Estoy yendo a", self.pacDotPos[self.indexPacDot])
+            #print("Estoy en", self.charsPos[playerId][0] // self.cellSize, self.charsPos[playerId][1] // self.cellSize)
+            if( (self.charsPosCenter[playerId][0] // self.cellSize == self.pacDotPos[self.indexPacDot][0]) and
+                (self.charsPosCenter[playerId][1] // self.cellSize == self.pacDotPos[self.indexPacDot][1]) ):
+                #print("llegueeeeeeeeeeeeeeeeeeeeeeeeee")
+                self.indexPacDot = (self.indexPacDot + 1) % len(self.pacDotPos)
+
+
+            else:
+                #print("no he llegado")
+                self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+                #print(self.ghostPos[playerId - 1])
+                #If the ghost is not able to move then correct it's direction
+                if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                    #print("Corregire mi direccion")
+                    self.players[playerId].changeDir(self.correctDir(playerId))
+                else:
+                    destination = self.pacDotPos[self.indexPacDot]
+                    self.paths[playerId - 1] = self.calcPath(None, playerId, destination)
+                    if(self.paths[playerId - 1]):
+                    #print(self.paths[playerId - 1])
+                        self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+                    else:
+                        pass
+                        #print("YA NO HAY MAS CAMINO PERO NO HE LLEGADO")
+
+
 
     def updatePlayerPos(self, playerId):
         """

@@ -107,6 +107,7 @@ class Map():
         return AStarMap
 
 
+    
     def updatePlayersCount(self):
         """
         Updates the players count using the current map
