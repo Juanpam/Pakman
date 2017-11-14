@@ -129,7 +129,7 @@ class Game():
         self.gameClock = pygame.time.Clock()
 
         #Turns on or off the sound
-        self.sound = False
+        self.sound = True
         
         
         #Turn to true for some fun
@@ -258,6 +258,9 @@ class Game():
                     while(pygame.mixer.music.get_busy()):
                         pass#print("Sigo ocupadisimo")
                     death = False
+                    pygame.event.clear()
+                    for i in range(1,3):
+                        pygame.time.set_timer(pygame.USEREVENT+i, 0)
                     break
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
@@ -294,6 +297,7 @@ class Game():
             #     print(row)
             #Uncomment for a slow game play useful for debuggin
             self.gameClock.tick(120)
+
 
         self.__init__()
 

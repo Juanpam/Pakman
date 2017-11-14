@@ -26,6 +26,9 @@ class Map():
         #3 represents a tomato (Big pill)
         #4 represents Ms Pakman
         #5 represents a red ghost
+        #6 represents a purple ghost
+        #7 represents a orange ghost
+        #8 represents a blue ghost
         if(not filename):
             self.matrix = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
             for i in range(self.dimensions[0]):
