@@ -133,7 +133,7 @@ class Game():
         
         
         #Turn to true for some fun
-        self.metal = False
+        self.metal = True
 
         if(self.metal):
             self.sound = True
@@ -209,9 +209,9 @@ class Game():
         """
         firstTime = True
         beginSoundFinished = False
-        
+        death = False
         while True:
-            if(firstTime or beginSoundFinished):
+            if(firstTime or beginSoundFinished and not death):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+1:
@@ -229,15 +229,18 @@ class Game():
 
 
                 
-                for i,p in enumerate(self.players):
-                    self.updateGhostDir(i)
-                    self.movePlayer(i)
-                    self.updatePlayerPos(i)
-                # self.movePlayer(1)
-                # self.movePlayer(0)
-                self.background=self.drawMap(False)
-                self.screen.fill(self.color)
-                self.screen.blit(self.background, (0,0))
+                
+                if(not death):
+                    for i,p in enumerate(self.players):
+                        self.updateGhostDir(i)
+                        self.movePlayer(i)
+                        self.updatePlayerPos(i)
+                    # self.movePlayer(1)
+                    # self.movePlayer(0)
+                    death = self.checkIfDeath()
+                    self.background=self.drawMap(False)
+                    self.screen.fill(self.color)
+                    self.screen.blit(self.background, (0,0))
 
 
                 # self.screen.blit(self.msPakmanImages[self.imageId],(50*4,50*4))
@@ -248,6 +251,14 @@ class Game():
                 # print(self.charsPos)
             else:
 
+                if(death):
+                    pygame.mixer.stop()
+                    pygame.mixer.music.load("pacman_death.wav")
+                    pygame.mixer.music.play()
+                    while(pygame.mixer.music.get_busy()):
+                        pass#print("Sigo ocupadisimo")
+                    death = False
+                    break
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+2:
@@ -283,6 +294,18 @@ class Game():
             #     print(row)
             #Uncomment for a slow game play useful for debuggin
             self.gameClock.tick(120)
+
+        self.__init__()
+
+
+    def checkIfDeath(self):
+        r = self.radiusPakman+self.radiusGhost
+        for p in self.charsPosCenter[1:]:
+            #print(p[0])
+            if(abs(p[0] - self.charsPosCenter[0][0]) < r and
+                abs(p[1] - self.charsPosCenter[0][1]) < r):
+                return True
+        return False
 
     def createEvents(self):
 
@@ -358,6 +381,8 @@ class Game():
 
         self.images=[self.wallImage,self.pillImage,self.tomatoImage,self.msPakmanImages[0],self.ghostImages[0][0]]
 
+        self.radiusPakman = self.images[3].get_width() // 2
+        self.radiusGhost = self.images[4].get_width() // 2
         ## Re arranging image order
         #Makes second player purple
         self.ghostImages[1], self.ghostImages[5] = self.ghostImages[5], self.ghostImages[1]  
