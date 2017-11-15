@@ -130,6 +130,7 @@ class Game():
         self.gameClock = pygame.time.Clock()
 
         #Turns on or off the sound
+        self.fchannel = pygame.mixer.find_channel()
         self.sound = True
         
         
@@ -568,8 +569,9 @@ class Game():
         """
         self.powerUp = True
         pygame.time.set_timer(pygame.USEREVENT+3, self.powerUpTime)
-        self.fchannel = pygame.mixer.find_channel()
-        self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
+        if(not self.fchannel.get_busy()):
+            self.fchannel = pygame.mixer.find_channel()
+            self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
         for i in range(len(self.ghostImages)):
             self.ghostImages[i] = self.scaredGhostImages
 
