@@ -4,16 +4,128 @@
 		"selected_items":
 		[
 			[
-				"res",
-				"refreshImagesTime\tstatement"
+				"sac",
+				"scaredGhostImages\tstatement"
+			],
+			[
+				"origi",
+				"originalGhostImages\tstatement"
+			],
+			[
+				"ghostI",
+				"ghostImages\tstatement"
+			],
+			[
+				"ghost",
+				"ghostImages\tstatement"
+			],
+			[
+				"Us",
+				"USEREVENT\tinstance"
+			],
+			[
+				"power",
+				"powerUpTime"
+			],
+			[
+				"user",
+				"USEREVENT\tinstance"
+			],
+			[
+				"cehck",
+				"checkIfWin\tfunction"
+			],
+			[
+				"rad",
+				"radiusGhost\tstatement"
+			],
+			[
+				"radi",
+				"radiusPakman\tstatement"
+			],
+			[
+				"charP",
+				"charPosCenter"
+			],
+			[
+				"max",
+				"maxCountParent\tstatement"
 			],
 			[
 				"update",
-				"updateImages\tfunction"
+				"updatePacDoteZone"
+			],
+			[
+				"find",
+				"findPacDotesZones\tfunction"
+			],
+			[
+				"players",
+				"playersCount\tstatement"
+			],
+			[
+				"no",
+				"noObstaclesPath\tstatement"
+			],
+			[
+				"pla",
+				"playersCount\tstatement"
+			],
+			[
+				"set",
+				"set_timer"
+			],
+			[
+				"first",
+				"firstTime\tstatement"
+			],
+			[
+				"updateP",
+				"updatePlayerPos"
 			],
 			[
 				"gh",
-				"ghostImages\tstatement"
+				"ghostPos\tstatement"
+			],
+			[
+				"game",
+				"gameMap\tstatement"
+			],
+			[
+				"player",
+				"playerId\tparam"
+			],
+			[
+				"pl",
+				"playerId-1"
+			],
+			[
+				"calc",
+				"calcPath\tfunction"
+			],
+			[
+				"As",
+				"AStarMap"
+			],
+			[
+				"get",
+				"getNoObstaclesMap\tfunction"
+			],
+			[
+				"AStar",
+				"AStarMap\tstatement"
+			],
+			[
+				"updateG",
+				"updateGhostsPos\tfunction"
+			],
+			[
+				"map",
+				"mapToLoad\tstatement"
+			],
+			[
+				"res",
+				"refreshImagesTime\tstatement"
 			],
 			[
 				"draw",
@@ -22,10 +134,6 @@
 			[
 				"charsP",
 				"charsPosCenter\tstatement"
-			],
-			[
-				"players",
-				"playersCount"
 			],
 			[
 				"Var",
@@ -44,10 +152,6 @@
 				"AStarMap\tstatement"
 			],
 			[
-				"pla",
-				"playerId\tparam"
-			],
-			[
 				"ch",
 				"charsPosCenter\tstatement"
 			],
@@ -58,10 +162,6 @@
 			[
 				"charPos",
 				"charPosCenter"
-			],
-			[
-				"get",
-				"get_height"
 			],
 			[
 				"move",
@@ -80,16 +180,8 @@
 				"__init__\tfunction"
 			],
 			[
-				"game",
-				"gameMap\tstatement"
-			],
-			[
 				"char",
 				"charsPos\tstatement"
-			],
-			[
-				"player",
-				"playersCount\tstatement"
 			],
 			[
 				"getC",
@@ -124,10 +216,6 @@
 				"spaceBetweenMSPak\tstatement"
 			],
 			[
-				"ghost",
-				"ghostsCount\tstatement"
-			],
-			[
 				"interva",
 				"intervalSizeMSPak\tstatement"
 			],
@@ -138,10 +226,6 @@
 			[
 				"load",
 				"loadSpriteSheet"
-			],
-			[
-				"calc",
-				"calcPronostic"
 			],
 			[
 				"row",
@@ -430,90 +514,6 @@
 			[
 				"opt",
 				"optCombButton\tstatement"
-			],
-			[
-				"Tree",
-				"Treeview\tclass"
-			],
-			[
-				"CALC",
-				"calcPronostic\tfunction"
-			],
-			[
-				"main",
-				"main_frame\tstatement"
-			],
-			[
-				"colu",
-				"columnspan"
-			],
-			[
-				"sho",
-				"showMPS\tfunction"
-			],
-			[
-				"MAPE",
-				"meanMAPE\tfunction"
-			],
-			[
-				"add",
-				"add_subplot\tfunction"
-			],
-			[
-				"Fi",
-				"figure"
-			],
-			[
-				"figure",
-				"figure\tfunction"
-			],
-			[
-				"wa",
-				"wait_window"
-			],
-			[
-				"te",
-				"text"
-			],
-			[
-				"tex",
-				"textvariable"
-			],
-			[
-				"column",
-				"columnconfigure\tstatement"
-			],
-			[
-				"file",
-				"filename"
-			],
-			[
-				"sh",
-				"showinfo\tfunction"
-			],
-			[
-				"mod",
-				"modNumber"
-			],
-			[
-				"como",
-				"Combobox\tclass"
-			],
-			[
-				"gr",
-				"genGraph\tfunction"
-			],
-			[
-				"re",
-				"resource_path\tfunction"
-			],
-			[
-				"ope",
-				"open_file\tfunction"
-			],
-			[
-				"r",
-				"resource_path\tfunction"
 			]
 		]
 	},
@@ -523,16 +523,7 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 16630,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "player.py",
-			"settings":
-			{
-				"buffer_size": 1570,
+				"buffer_size": 32239,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -674,13 +665,19 @@
 	],
 	"file_history":
 	[
-		"/C/Windows/Logs/DISM/dism.log",
+		"/X/gitProyects/Pakman/map.py",
+		"/X/gitProyects/Pakman/dforest.py",
 		"/X/gitProyects/Pakman/main.py",
+		"/X/gitProyects/Pakman/map7.txt",
+		"/X/gitProyects/Pakman/astar.py",
+		"/X/gitProyects/Pakman/spriteSheet2.png",
+		"/X/gitProyects/Pakman/player.py",
+		"/X/gitProyects/Pakman/map6.txt",
+		"/X/gitProyects/Pakman/map4.txt",
+		"/X/gitProyects/Pakman/map5.txt",
+		"/C/Windows/Logs/DISM/dism.log",
 		"/C/Windows/System32/drivers/etc/hosts",
 		"/X/gitProyects/Pakman/map.txt",
-		"/X/gitProyects/Pakman/astar.py",
-		"/X/gitProyects/Pakman/map.py",
-		"/X/gitProyects/Pakman/player.py",
 		"/X/gitProyects/Pakman/terminal.glue",
 		"/X/gitProyects/Pakman/__pycache__/terminal.glue",
 		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/Glue.sublime-settings",
@@ -795,13 +792,7 @@
 		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/MainActivity.java",
 		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/adminSQLiteOpenHelper.java",
 		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/messagebox.py",
-		"/X/Python test/hello.py",
-		"/X/Python test/hello.spec",
-		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Preferences.sublime-settings",
-		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/site-packages/PIL/ImageTk.py",
-		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/site-packages/PIL/Image.py",
-		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/__init__.py",
-		"/X/Google Drive/Web/css/css/css/css_link_buttons/index.html"
+		"/X/Python test/hello.py"
 	],
 	"find":
 	{
@@ -819,6 +810,19 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self.color",
+			"debug",
+			"self.charsPos",
+			"self.ghostPos",
+			"self.playerPos",
+			"self.playerPos[0]",
+			"charposcenter",
+			"playerscou",
+			"pakman_m",
+			" print",
+			"print",
+			"^print",
+			"self.AStarMap",
 			"print",
 			"drawCe",
 			"pep"
@@ -848,15 +852,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16630,
+						"buffer_size": 32239,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1701,
-								1701
+								22322,
+								22322
 							]
 						],
 						"settings":
@@ -877,56 +881,16 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 688.0,
+						"translation.y": 7759.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "player.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1570,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1293,
-								1293
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
 					"file": "spriteSheet2.png",
 					"semi_transient": true,
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "image"
 				}
 			]
@@ -965,7 +929,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 184.0
+		"height": 160.0
 	},
 	"output.find_results":
 	{
@@ -1013,7 +977,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 338.0,
+	"side_bar_width": 255.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -3,8 +3,6 @@
 # FB - 201012256
 from heapq import heappush, heappop # for priority queue
 import math
-import time
-import random
 
 class node:
     # current position

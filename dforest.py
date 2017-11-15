@@ -61,6 +61,9 @@ class dforest(object):
   def maxCountParent(self):
     return self.find(self.__count.index(max(self.__count)))
 
+  def maxCount(self):
+    return max(self.__count)
+
   def setCount(self, x, count):
     """
     Manually sets count

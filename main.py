@@ -64,6 +64,7 @@ class Game():
 
         #Load sprites
         self.loadSpriteSheet()
+        self.originalGhostImages = self.ghostImages[:]
         self.charsPos = self.getCharsPos() #Characters top-left edge position
         #print(self.charsPos) 
         self.charsPosCenter = self.getCharPosCenter() #Characters center position
@@ -133,15 +134,19 @@ class Game():
         
         
         #Turn to true for some fun
-        self.metal = True
+        self.metal = False
 
         if(self.metal):
             self.sound = True
             for i in range(self.playersCount):
-                self.players[i].spdx += 4
-                self.players[i].spdy += 4
+                self.players[i].spdx += 3
+                self.players[i].spdy += 3
             self.refreshImagesTime = 70
             pygame.time.set_timer(pygame.USEREVENT+2, 5500)
+
+        #Powerup related variables
+        self.powerUp = False
+        self.powerUpTime = 10000
         
         self.createEvents()
         self.infiniteLoop()
@@ -209,15 +214,17 @@ class Game():
         """
         firstTime = True
         beginSoundFinished = False
-        death = False
+        death = win = False
         while True:
-            if(firstTime or beginSoundFinished and not death):
+            if(firstTime or beginSoundFinished and not (death or win)):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+1:
                         self.updateImages()
                     if event.type == pygame.USEREVENT+2:
                         self.color = self.white if self.color == self.black else self.black
+                    if event.type == pygame.USEREVENT+3:
+                        self.deactivatePowerUp()
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
                         self.players[0].changeDir(4)
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
@@ -230,7 +237,7 @@ class Game():
 
                 
                 
-                if(not death):
+                if(not death or win):
                     for i,p in enumerate(self.players):
                         self.updateGhostDir(i)
                         self.movePlayer(i)
@@ -238,6 +245,8 @@ class Game():
                     # self.movePlayer(1)
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
+                    death = False
+                    win = self.checkIfWin()
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
                     self.screen.blit(self.background, (0,0))
@@ -249,11 +258,24 @@ class Game():
                 #         self.screen.blit(self.ghostImages[j][self.imageId],(50*i,50*j))
                 #print(pygame.mouse.get_pos(), self.charsPos)
                 # print(self.charsPos)
+
+                #print(self.forest.maxCount())
             else:
 
                 if(death):
                     pygame.mixer.stop()
                     pygame.mixer.music.load("pacman_death.wav")
+                    pygame.mixer.music.play()
+                    while(pygame.mixer.music.get_busy()):
+                        pass#print("Sigo ocupadisimo")
+                    death = False
+                    pygame.event.clear()
+                    for i in range(1,3):
+                        pygame.time.set_timer(pygame.USEREVENT+i, 0)
+                    break
+                if(win):
+                    pygame.mixer.stop()
+                    pygame.mixer.music.load("pacman_win.wav")
                     pygame.mixer.music.play()
                     while(pygame.mixer.music.get_busy()):
                         pass#print("Sigo ocupadisimo")
@@ -295,7 +317,11 @@ class Game():
             # print("Here is the map")
             # for row in self.gameMap.matrix:
             #     print(row)
-            #Uncomment for a slow game play useful for debuggin
+            # #Uncomment for a slow game play useful for debuggin
+            if(self.powerUp):
+                pass#print("Powerup activo")
+            else:
+                pass#print("Powerup inactivo")
             self.gameClock.tick(120)
 
 
@@ -310,6 +336,13 @@ class Game():
                 abs(p[1] - self.charsPosCenter[0][1]) < r):
                 return True
         return False
+
+    def checkIfWin(self):
+        maxCountPacDots = self.forest.maxCount()
+        if(maxCountPacDots == 0):
+            return True
+        else:
+            return False
 
     def createEvents(self):
 
@@ -364,6 +397,9 @@ class Game():
             self.ghostImages.append(self.sSheet.images_at([(initialXGhost+(intervalSizeG*x),initialYGhost+(intervalSizeG*y),ghostWidth ,ghostHeight) for y in range(gSpriteCount)],self.black))
         self.msPakmanImages=self.sSheet.images_at([(initialXMSPak,initialYMSPak+(intervalSizeMSPak*y),msPakWidth,msPakHeight) for y in range(msPakCount)],self.black)
 
+
+        self.scaredGhostImages = self.sSheet.images_at([(initialXGhost,initialYGhost+(intervalSizeG*(y+11)),ghostWidth ,ghostHeight) for y in range(gSpriteCount)],self.black)
+        #print("len de scared",len(self.scaredGhostImages))
         #Tomato and pill load
         self.pillImage=pygame.image.load("pill.png")
         self.tomatoImage=pygame.image.load("tomatoso.png")
@@ -520,10 +556,31 @@ class Game():
             if(cell == 2 and pos in self.pacDotPos):
                     #print("ACTUALICEEE")
                     self.updatePacDoteZone()
+            if(cell == 3):
+                self.activatePowerUp()
         else:
             if(self.gameMap.getCell(*oldPos) < 4):
                 self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
             
+    def activatePowerUp(self):
+        """
+        Makes the changes necessary to activate the power up effects
+        """
+        self.powerUp = True
+        pygame.time.set_timer(pygame.USEREVENT+3, self.powerUpTime)
+        self.fchannel = pygame.mixer.find_channel()
+        self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
+        for i in range(len(self.ghostImages)):
+            self.ghostImages[i] = self.scaredGhostImages
+
+    def deactivatePowerUp(self):
+        """
+        Makes the changes necessary to deactivate the power up effects
+        """
+        self.powerUp = False
+        pygame.time.set_timer(pygame.USEREVENT+3, 0)
+        self.fchannel.stop()
+        self.ghostImages = self.originalGhostImages[:]
 
     def checkMovementPlayer(self,playerId):
         #Checks if the player can move in the desired direction using the borders and the center
@@ -607,7 +664,7 @@ class Game():
                     self.players[playerId].changeDir(self.correctDir(playerId))
                 else:
                     self.paths[playerId - 1] = self.calcPath(None, playerId)
-                    #print(self.path)
+                    #print(self.paths[playerId - 1], "id", playerId - 1)
                     if(self.paths[playerId - 1]):
                         self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
