@@ -137,7 +137,7 @@ class Game():
         
         
         #Turn to true for some fun
-        self.metal = False
+        self.metal = True
 
         if(self.metal):
             self.sound = True
@@ -251,7 +251,7 @@ class Game():
                     # self.movePlayer(1)
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
-                    death = False
+                    # death = False
                     win = self.checkIfWin()
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
@@ -298,6 +298,7 @@ class Game():
                         chomp.set_volume(0.4)
                         pygame.mixer.find_channel().play(chomp, -1)
                         beginSoundFinished = True
+                        self.fchannel = pygame.mixer.find_channel()
             
             pygame.display.flip()
 
@@ -314,6 +315,7 @@ class Game():
                     else:
                         if(firstTime):
                             pygame.mixer.find_channel().play(pygame.mixer.Sound("pakman_metal.wav"), -1)
+                            
                 else:
                     beginSoundFinished = True    
                         
@@ -590,6 +592,8 @@ class Game():
         if(not self.fchannel.get_busy()):
             self.fchannel = pygame.mixer.find_channel()
             self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
+        else:
+            print("YA ESTABA SONANDO")
         for i in range(len(self.ghostImages)):
             self.ghostImages[i] = self.scaredGhostImages
 
@@ -608,18 +612,23 @@ class Game():
         
         width, height = self.images[playerId+3].get_width(), self.images[playerId+3].get_width()
 
+        dx = dy = 1
+        if(playerId == 0):
+            dx = self.players[playerId].spdx 
+            dy = self.players[playerId].spdy
+        
         #print("Direccion: ",self.players[playerId].dir, "playerId", 2)
-        return (((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
-            (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
+        return (((self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+dx)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
+            (self.players[playerId].dir==1 and self.gameMap.getCell(((self.charsPos[playerId][0]+width+dx)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
             
-            ((self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
-            (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-1)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
+            ((self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-dx)//self.cellSize),self.charsPos[playerId][1]//self.cellSize)!=1) and
+            (self.players[playerId].dir==2 and self.gameMap.getCell(((self.charsPos[playerId][0]-dx)//self.cellSize),(self.charsPos[playerId][1]+height)//self.cellSize)!=1)) or
 
-            ((self.players[playerId].dir==3 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+height+1)//self.cellSize))!=1) and
-            (self.players[playerId].dir==3 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]+height+1)//self.cellSize))!=1)) or
+            ((self.players[playerId].dir==3 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]+height+dy)//self.cellSize))!=1) and
+            (self.players[playerId].dir==3 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]+height+dy)//self.cellSize))!=1)) or
             
-            ((self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1)) and
-            (self.players[playerId].dir==4 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]-1)//self.cellSize))!=1))
+            ((self.players[playerId].dir==4 and self.gameMap.getCell((self.charsPos[playerId][0]//self.cellSize),((self.charsPos[playerId][1]-dy)//self.cellSize))!=1)) and
+            (self.players[playerId].dir==4 and self.gameMap.getCell(((self.charsPos[playerId][0] + width)//self.cellSize),((self.charsPos[playerId][1]-dy)//self.cellSize))!=1))
        
 
     def movePlayer(self,playerId):
