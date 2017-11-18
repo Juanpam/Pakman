@@ -51,7 +51,7 @@ class Game():
         self.cellSize = 50
 
         #Map set-up
-        mapToLoad = "map7.txt"
+        mapToLoad = "map8.txt"
         self.gameMap = map.Map(mapToLoad)
         self.originalGameMap = map.Map(mapToLoad)
         self.noObstaclesMap = self.gameMap.getNoObstaclesMap()
@@ -251,7 +251,7 @@ class Game():
                     # self.movePlayer(1)
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
-                    # death = False
+                    death = False
                     win = self.checkIfWin()
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
@@ -264,7 +264,7 @@ class Game():
                 #         self.screen.blit(self.ghostImages[j][self.imageId],(50*i,50*j))
                 #print(pygame.mouse.get_pos(), self.charsPos)
                 # print(self.charsPos)
-
+                #print("Farthest point",self.gameMap.getFarthestEmptyPoint(*self.playerPos[0]))
                 #print(self.forest.maxCount())
             else:
 
@@ -671,8 +671,19 @@ class Game():
         """
         Updates the ghost direction
         """
+        if(self.powerUp and playerId>0):
+            #print(self.charsPos)
+            self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+            if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                self.players[playerId].changeDir(self.correctDir(playerId))
+            else:
+                self.paths[playerId - 1] = self.calcPath(self.gameMap.getRunawayMap(), playerId, self.gameMap.getFarthestEmptyPoint(*self.playerPos[0]))
+                #print(self.paths[playerId - 1], "id", playerId - 1)
+                if(self.paths[playerId - 1]):
+                    self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+        
         #For the red and the purple ghost
-        if(playerId <= 2):
+        elif(playerId <= 2):
             #If pakman has not been catched
             if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
                 (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
@@ -751,8 +762,6 @@ class Game():
                     else:
                         pass
                         #print("YA NO HAY MAS CAMINO PERO NO HE LLEGADO")
-
-
 
     def updatePlayerPos(self, playerId):
         """

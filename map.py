@@ -109,7 +109,41 @@ class Map():
 
         return AStarMap
 
+    def getDistanceInCells(self,x1,y1,x2,y2):
+        return int(((x2-x1)**2 + (y2-y1)**2)**(1/2))
 
+    def getFarthestEmptyPoint(self,x1,y1):
+        """
+        Given a (x1,y1) coordinate, the farthest empty point to that coordinate is returned
+        """
+        farthestPoint = (x1, y1)
+        maxDistance = 0
+        for y2 in range(self.dimensions[0]):
+            for x2 in range(self.dimensions[1]):
+                distance = self.getDistanceInCells(x1,y1,x2,y2)
+                if(distance > maxDistance and self.getCell(x2,y2) == 0):
+                    maxDistance = distance
+                    farthestPoint = (x2,y2)
+        
+        return farthestPoint
+
+    def getRunawayMap(self):
+        #Arrays used to check cells adjacency
+        dx = [0, 1, 0, -1, 1, -1, 1, -1]
+        dy = [-1, 0, 1, 0, 1, 1, -1, -1]
+        runAwayMap = [[0 for i in range(self.dimensions[0])]for j in range(self.dimensions[1])]
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[i])):
+                if(self.matrix[i][j]==1):
+                    runAwayMap[i][j] = 1
+                elif(self.matrix[i][j] == 4):
+                    for k in range(len(dx)):
+                        u,v = j+dx[k], i+dy[k]
+                        if(0 <= u < self.dimensions[0] and 
+                            0 <= v < self.dimensions[1]):
+                            runAwayMap[v][u] = 1
+
+        return runAwayMap
     
     def updatePlayersCount(self):
         """
