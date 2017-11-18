@@ -69,10 +69,7 @@ class Game():
         #print(self.charsPos) 
         self.charsPosCenter = self.getCharPosCenter() #Characters center position
 
-        #Draw map based on the gameMap
-        self.color = self.black
-        self.background = self.drawMap()
-
+        
         #There are at least 2 players always
         self.players = [player.msPakman(), player.ghost()]
 
@@ -84,6 +81,11 @@ class Game():
         for i in range(1,self.playersCount):
             self.players[i].spdx -= 1
             self.players[i].spdy -= 1
+
+        #Draw map based on the gameMap
+        self.color = self.black
+        self.background = self.drawMap()
+
 
         #Find path to follow Ms. Pakman
         self.paths = []
@@ -240,13 +242,16 @@ class Game():
                 
                 if(not death or win):
                     for i,p in enumerate(self.players):
-                        self.updateGhostDir(i)
-                        self.movePlayer(i)
-                        self.updatePlayerPos(i)
+                        if(p.alive):
+                            self.updateGhostDir(i)
+                            self.movePlayer(i)
+                            self.updatePlayerPos(i)
+                    
+                    self.checkGhostsCatched()
                     # self.movePlayer(1)
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
-                    death = False
+                    # death = False
                     win = self.checkIfWin()
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
@@ -330,13 +335,25 @@ class Game():
 
 
     def checkIfDeath(self):
-        r = self.radiusPakman+self.radiusGhost
-        for p in self.charsPosCenter[1:]:
-            #print(p[0])
-            if(abs(p[0] - self.charsPosCenter[0][0]) < r and
-                abs(p[1] - self.charsPosCenter[0][1]) < r):
-                return True
+        if(not self.powerUp):
+            r = self.radiusPakman+self.radiusGhost
+            for i,p in enumerate(self.charsPosCenter[1:]):
+                #print(p[0])
+                if(self.players[i+1].alive and 
+                    abs(p[0] - self.charsPosCenter[0][0]) < r and
+                    abs(p[1] - self.charsPosCenter[0][1]) < r):
+                    return True
         return False
+
+    def checkGhostsCatched(self):
+        if(self.powerUp):
+            r = self.radiusPakman+self.radiusGhost
+            for i,p in enumerate(self.charsPosCenter[1:]):
+                #print(p[0])
+                if(abs(p[0] - self.charsPosCenter[0][0]) < r and
+                    abs(p[1] - self.charsPosCenter[0][1]) < r):
+                    #print("Ghost",i,"died.")
+                    self.players[i+1].alive = False
 
     def checkIfWin(self):
         maxCountPacDots = self.forest.maxCount()
@@ -511,7 +528,8 @@ class Game():
         #             charId = self.gameMap.getCell(i,j) #Which character are we painting
         #             #print(charId,self.charsPos,self.cellSize*i, self.cellSize*j,pygame.mouse.get_pos())
         for charId in self.gameMap.playersInMap:
-            background.blit(self.images[charId-1], (self.charsPos[charId-4][0], self.charsPos[charId-4][1]))
+            if(self.players[charId-4].alive):
+                background.blit(self.images[charId-1], (self.charsPos[charId-4][0], self.charsPos[charId-4][1]))
         return background
 
     def getCharsPos(self):

@@ -61,6 +61,7 @@ class ghost(genericPlayer):
 
 		#states ghost: searching=1 calculating=2 
 		super().__init__()
+		self.alive = True
 		self.stateGhost=1
 		self.lastSprite = 0
 		self.totalSprites = 2
@@ -74,7 +75,7 @@ class msPakman(genericPlayer):
 
 	def __init__(self):
 		super().__init__()
-		self.lives=3
+		self.alive = True
 		self.points=0
 		self.lastSprite = 0
 		self.totalSprites = 3

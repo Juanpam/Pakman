@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"get_",
+				"get_pos"
+			],
+			[
 				"sac",
 				"scaredGhostImages\tstatement"
 			],
@@ -510,10 +514,6 @@
 			[
 				"bo",
 				"bottleNeckButton\tstatement"
-			],
-			[
-				"opt",
-				"optCombButton\tstatement"
 			]
 		]
 	},
@@ -523,7 +523,7 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 32239,
+				"buffer_size": 32342,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -796,7 +796,7 @@
 	],
 	"find":
 	{
-		"height": 41.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -852,15 +852,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 32239,
+						"buffer_size": 32342,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								22322,
-								22322
+								4330,
+								4330
 							]
 						],
 						"settings":
@@ -874,6 +874,10 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -881,7 +885,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 7759.0,
+						"translation.y": 1715.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
