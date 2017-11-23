@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"power",
+				"powerUp\tstatement"
+			],
+			[
+				"get",
+				"getCell\tfunction"
+			],
+			[
+				"check",
+				"checkGhostsCatched\tfunction"
+			],
+			[
 				"get_",
 				"get_pos"
 			],
@@ -26,10 +38,6 @@
 			[
 				"Us",
 				"USEREVENT\tinstance"
-			],
-			[
-				"power",
-				"powerUpTime"
 			],
 			[
 				"user",
@@ -110,10 +118,6 @@
 			[
 				"As",
 				"AStarMap"
-			],
-			[
-				"get",
-				"getNoObstaclesMap\tfunction"
 			],
 			[
 				"AStar",
@@ -510,10 +514,6 @@
 			[
 				"modal",
 				"modalDialog"
-			],
-			[
-				"bo",
-				"bottleNeckButton\tstatement"
 			]
 		]
 	},
@@ -523,7 +523,7 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 32342,
+				"buffer_size": 34263,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -665,13 +665,14 @@
 	],
 	"file_history":
 	[
+		"/X/gitProyects/Pakman/map8.txt",
+		"/X/gitProyects/Pakman/player.py",
 		"/X/gitProyects/Pakman/map.py",
-		"/X/gitProyects/Pakman/dforest.py",
 		"/X/gitProyects/Pakman/main.py",
+		"/X/gitProyects/Pakman/dforest.py",
 		"/X/gitProyects/Pakman/map7.txt",
 		"/X/gitProyects/Pakman/astar.py",
 		"/X/gitProyects/Pakman/spriteSheet2.png",
-		"/X/gitProyects/Pakman/player.py",
 		"/X/gitProyects/Pakman/map6.txt",
 		"/X/gitProyects/Pakman/map4.txt",
 		"/X/gitProyects/Pakman/map5.txt",
@@ -791,8 +792,7 @@
 		"/X/test/csv.py",
 		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/MainActivity.java",
 		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/adminSQLiteOpenHelper.java",
-		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/messagebox.py",
-		"/X/Python test/hello.py"
+		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/messagebox.py"
 	],
 	"find":
 	{
@@ -810,6 +810,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"drawch",
+			"playersInMap",
 			"self.color",
 			"debug",
 			"self.charsPos",
@@ -852,15 +854,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 32342,
+						"buffer_size": 34263,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4330,
-								4330
+								8894,
+								8894
 							]
 						],
 						"settings":
@@ -874,10 +876,6 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -885,17 +883,11 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1715.0,
+						"translation.y": 3234.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
-				},
-				{
-					"file": "spriteSheet2.png",
-					"semi_transient": true,
-					"stack_index": 1,
-					"type": "image"
 				}
 			]
 		}

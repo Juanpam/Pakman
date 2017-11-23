@@ -218,8 +218,9 @@ class Game():
         firstTime = True
         beginSoundFinished = False
         death = win = False
+        level = 1
         while True:
-            if(firstTime or beginSoundFinished and not (death or win)):
+            if(firstTime or beginSoundFinished and not (death or win) and level == 1):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+1:
@@ -251,11 +252,13 @@ class Game():
                     # self.movePlayer(1)
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
-                    # death = False
+                    death = False
                     win = self.checkIfWin()
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
                     self.screen.blit(self.background, (0,0))
+
+                
 
 
                 # self.screen.blit(self.msPakmanImages[self.imageId],(50*4,50*4))
@@ -279,7 +282,8 @@ class Game():
                     for i in range(1,3):
                         pygame.time.set_timer(pygame.USEREVENT+i, 0)
                     break
-                if(win):
+                if(win and level == 1):
+                    level = 2
                     pygame.mixer.stop()
                     pygame.mixer.music.load("pacman_win.wav")
                     pygame.mixer.music.play()
@@ -289,7 +293,17 @@ class Game():
                     pygame.event.clear()
                     for i in range(1,3):
                         pygame.time.set_timer(pygame.USEREVENT+i, 0)
-                    break
+                    
+
+                elif(win and level == 2):
+                    #print("Nivel 2")
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT: sys.exit()
+
+
+                    #Code for level 2
+                    self.screen.fill(self.color)
+                    #self.screen.blit(self.background, (0,0))
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+2:
@@ -331,9 +345,6 @@ class Game():
             else:
                 pass#print("Powerup inactivo")
             self.gameClock.tick(120)
-
-
-        self.__init__()
 
 
     def checkIfDeath(self):
@@ -593,7 +604,7 @@ class Game():
             self.fchannel = pygame.mixer.find_channel()
             self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
         else:
-            print("YA ESTABA SONANDO")
+            pass#print("YA ESTABA SONANDO")
         for i in range(len(self.ghostImages)):
             self.ghostImages[i] = self.scaredGhostImages
 
