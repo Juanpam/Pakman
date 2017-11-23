@@ -523,7 +523,7 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 34263,
+				"buffer_size": 36676,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -854,15 +854,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 34263,
+						"buffer_size": 36676,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8894,
-								8894
+								14035,
+								14035
 							]
 						],
 						"settings":
@@ -876,6 +876,10 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -883,7 +887,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3234.0,
+						"translation.y": 4858.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

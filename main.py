@@ -11,7 +11,7 @@ Makes use of the Pygame and Sys module.
 """
 
 
-import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os 
+import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os, flock
 from dforest import dforest
 
 
@@ -25,7 +25,7 @@ class Game():
     black = 0, 0, 0
     white = 255, 255, 255
     #playersCount = 2
-    def __init__(self):
+    def __init__(self, level = None):
 
 
         #Configuration variables
@@ -133,11 +133,11 @@ class Game():
 
         #Turns on or off the sound
         self.fchannel = pygame.mixer.find_channel()
-        self.sound = True
+        self.sound = False
         
         
         #Turn to true for some fun
-        self.metal = True
+        self.metal = False
 
         if(self.metal):
             self.sound = True
@@ -151,6 +151,9 @@ class Game():
         self.powerUp = False
         self.powerUpTime = 10000
         
+        if level == None:
+            level = 1
+        self.level = level
         self.createEvents()
         self.infiniteLoop()
 
@@ -218,9 +221,9 @@ class Game():
         firstTime = True
         beginSoundFinished = False
         death = win = False
-        level = 1
-        while True:
-            if(firstTime or beginSoundFinished and not (death or win) and level == 1):
+        
+        while self.level == 1:
+            if(firstTime or beginSoundFinished and not (death or win)):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+1:
@@ -252,8 +255,9 @@ class Game():
                     # self.movePlayer(1)
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
-                    death = False
+                    #death = False
                     win = self.checkIfWin()
+                    win = True
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
                     self.screen.blit(self.background, (0,0))
@@ -277,33 +281,23 @@ class Game():
                     pygame.mixer.music.play()
                     while(pygame.mixer.music.get_busy()):
                         pass#print("Sigo ocupadisimo")
-                    death = False
                     pygame.event.clear()
                     for i in range(1,3):
                         pygame.time.set_timer(pygame.USEREVENT+i, 0)
                     break
-                if(win and level == 1):
-                    level = 2
+                if(win):
+                    self.level = 2
+                    self.color = self.black
                     pygame.mixer.stop()
                     pygame.mixer.music.load("pacman_win.wav")
                     pygame.mixer.music.play()
                     while(pygame.mixer.music.get_busy()):
                         pass#print("Sigo ocupadisimo")
-                    death = False
                     pygame.event.clear()
                     for i in range(1,3):
                         pygame.time.set_timer(pygame.USEREVENT+i, 0)
                     
 
-                elif(win and level == 2):
-                    #print("Nivel 2")
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT: sys.exit()
-
-
-                    #Code for level 2
-                    self.screen.fill(self.color)
-                    #self.screen.blit(self.background, (0,0))
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+2:
@@ -345,6 +339,72 @@ class Game():
             else:
                 pass#print("Powerup inactivo")
             self.gameClock.tick(120)
+
+        
+        if(death):
+            print("Acabo el juego")
+            self.__init__()
+
+        print("Acabo el nivel 1")
+        firstTime = True
+        beginSoundFinished = death = win = False
+        if(self.metal):
+            self.sound = True
+            for i in range(self.playersCount):
+                self.players[i].spdx += 3
+                self.players[i].spdy += 3
+            self.refreshImagesTime = 70
+            pygame.time.set_timer(pygame.USEREVENT+2, 5500)
+        
+        self.flock = flock.Flock()
+        while(self.level == 2):
+            if(firstTime or beginSoundFinished and not (death or win)):
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT: sys.exit()
+
+                
+                print("Main Loop")
+
+
+
+                self.screen.fill(self.color)
+                pygame.display.flip()
+            
+            else:
+                print("This is not a main loop")
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT: sys.exit()
+                    if event.type == pygame.USEREVENT+2:
+                        pygame.time.set_timer(pygame.USEREVENT+2, 100)
+                        chomp = pygame.mixer.Sound("pacman_chomp.wav")
+                        chomp.set_volume(0.4)
+                        pygame.mixer.find_channel().play(chomp, -1)
+                        beginSoundFinished = True
+                        self.fchannel = pygame.mixer.find_channel()
+            
+            if(firstTime or not beginSoundFinished):
+                if(self.sound):
+                    if(not self.metal):
+                        if(firstTime):
+                            pygame.mixer.music.load("pacman_beginning.wav")
+                            pygame.mixer.music.play()
+                        if(not pygame.mixer.music.get_busy()):
+                            pygame.mixer.music.load("pacman_chomp.wav")
+                            pygame.mixer.music.play(-1)
+                            beginSoundFinished = True
+                    else:
+                        if(firstTime):
+                            pygame.mixer.find_channel().play(pygame.mixer.Sound("pakman_metal.wav"), -1)
+                            
+                else:
+                    beginSoundFinished = True    
+                        
+
+                firstTime = False
+
+            self.gameClock.tick(120)
+
+
 
 
     def checkIfDeath(self):
@@ -795,6 +855,6 @@ class Game():
 
 
 
-game = Game()
+game = Game(2)
 
 
