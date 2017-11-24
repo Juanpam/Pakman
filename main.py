@@ -11,9 +11,9 @@ Makes use of the Pygame and Sys module.
 """
 
 
-import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os, flock
+import sys, pygame, spritesheet, map, player, astar, pygame.freetype, os, flock, random
 from dforest import dforest
-
+from btree import BTree
 
 
 
@@ -27,6 +27,10 @@ class Game():
     #playersCount = 2
     def __init__(self, level = None):
 
+        #Level configuration
+        if level == None:
+            level = 1
+        self.level = level
 
         #Configuration variables
         os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -51,9 +55,9 @@ class Game():
         self.cellSize = 50
 
         #Map set-up
-        mapToLoad = "map8.txt"
-        self.gameMap = map.Map(mapToLoad)
-        self.originalGameMap = map.Map(mapToLoad)
+        self.mapToLoad = "map.txt"
+        self.gameMap = map.Map(self.mapToLoad)
+        self.originalGameMap = map.Map(self.mapToLoad)
         self.noObstaclesMap = self.gameMap.getNoObstaclesMap()
         self.AStarMap = self.gameMap.getAStarMap()
         self.playersCount = self.gameMap.playersCount
@@ -151,9 +155,7 @@ class Game():
         self.powerUp = False
         self.powerUpTime = 10000
         
-        if level == None:
-            level = 1
-        self.level = level
+        
         self.createEvents()
         self.infiniteLoop()
 
@@ -256,8 +258,8 @@ class Game():
                     # self.movePlayer(0)
                     death = self.checkIfDeath()
                     #death = False
-                    win = self.checkIfWin()
-                    win = True
+                    #win = self.checkIfWin()
+                    #win = True
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
                     self.screen.blit(self.background, (0,0))
@@ -346,32 +348,63 @@ class Game():
             self.__init__()
 
         print("Acabo el nivel 1")
+        print("Comienza nivel 2")
         firstTime = True
         beginSoundFinished = death = win = False
-        if(self.metal):
-            self.sound = True
-            for i in range(self.playersCount):
-                self.players[i].spdx += 3
-                self.players[i].spdy += 3
-            self.refreshImagesTime = 70
-            pygame.time.set_timer(pygame.USEREVENT+2, 5500)
-        
-        self.flock = flock.Flock()
+
+        self.prepareLevel2()
+
+
+        ########## LEVEL 2 ############
         while(self.level == 2):
             if(firstTime or beginSoundFinished and not (death or win)):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
+                    if event.type == pygame.USEREVENT+1:
+                            self.updateImages()
+                    if event.type == pygame.USEREVENT+2:
+                        self.color = self.white if self.color == self.black else self.black
+                    if event.type == pygame.USEREVENT+3:
+                        self.deactivatePowerUp()
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_UP:
+                        self.players[0].changeDir(4)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_DOWN:
+                        self.players[0].changeDir(3)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_LEFT:
+                        self.players[0].changeDir(2)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_RIGHT:
+                        self.players[0].changeDir(1)
 
                 
-                print("Main Loop")
+                #print("Main Loop")
 
+                # self.background = self.genRandomPowerUpPos(self.background)
+
+
+                if(not death or win):
+                    #print(self.charsPos)
+                    for i,p in enumerate(self.players):
+                        if(p.alive):
+                            self.updateGhostDir(i)
+                            self.movePlayer(i)
+                            self.updatePlayerPos(i)
+                    
+                    # self.checkGhostsCatched()
+                    # self.movePlayer(1)
+                    # self.movePlayer(0)
+                    death = self.checkIfDeath()
+                    #death = False
+                    # win = self.checkIfWin()
+
+                self.background = self.drawMap(True)
 
 
                 self.screen.fill(self.color)
+                self.screen.blit(self.background, (0,0))
                 pygame.display.flip()
             
             else:
-                print("This is not a main loop")
+                #print("This is not a main loop")
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
                     if event.type == pygame.USEREVENT+2:
@@ -405,6 +438,140 @@ class Game():
             self.gameClock.tick(120)
 
 
+
+    def prepareLevel2(self):
+        """
+        Prepares environment for the level 2
+        """
+
+        if(self.metal):
+            self.sound = True
+            for i in range(self.playersCount):
+                self.players[i].spdx += 3
+                self.players[i].spdy += 3
+            self.refreshImagesTime = 70
+            pygame.time.set_timer(pygame.USEREVENT+2, 5500)
+
+
+        bTree = self.createBTree()
+
+        #Big pink ghost 
+        self.ghostImages[0], self.ghostImages[5] = self.ghostImages[5], self.ghostImages[0]
+        self.ghostImages[0] = [pygame.transform.scale2x(i) for i in self.ghostImages[0]]
+        self.images[4] = self.ghostImages[0][0]
+
+        #Update map, charsPos and playersCount
+        self.mapToLoad = "map.txt"
+        self.gameMap = map.Map(self.mapToLoad)
+        self.originalGameMap = map.Map(self.mapToLoad)
+        self.AStarMap = self.gameMap.getAStarMap()        
+        self.playersCount = self.gameMap.playersCount
+
+        self.charsPos = self.getCharsPos() #Characters top-left edge position
+        #print(self.charsPos) 
+        self.charsPosCenter = self.getCharPosCenter() #Characters center position
+
+        #There are at least 2 players always
+        self.players = [player.msPakman(), player.ghost()]
+
+        #Add additional players/ghosts
+        for i in range(2,self.playersCount):
+            self.players.append(player.ghost())
+
+        #Update players logical position based on the position in the drawn map
+        for p in range(len(self.players)):
+            self.players[p].setPos(*self.charsPos[p])
+
+        #Decrease speed
+        for i in range(1,self.playersCount):
+            self.players[i].spdx -= 1
+            self.players[i].spdy -= 1
+
+        #Find path to follow Ms. Pakman
+        self.paths = []
+        for i in range(1 ,self.playersCount):
+            self.paths.append(self.calcPath(None, i))
+        if(7 in self.gameMap.playersInMap):
+            self.noObstaclesPath = self.calcPath(self.noObstaclesMap, 3)
+        self.visibleDistance = 10
+
+        self.ghostPos = [[( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize ),
+                            ( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize )] for p in range(1,len(self.players))]
+
+        self.playerPos = [( self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize ),
+                            ( self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize )]
+
+        
+
+        self.flock = flock.Flock()
+
+        self.createEvents()
+
+    def genRandomPowerUpPos(self, background):
+
+        xmax, ymax = self.width - self.images[2].get_width(), self.height - self.images[2].get_height()
+        x, y = random.randrange(xmax), random.randrange(ymax)
+        background.blit(self.images[2], (x, y))
+        return background
+
+    def createBTree(self):
+        """
+        Creates the behaviour tree for the big ghost on level 2
+        """
+        
+        selectors = [BTree("selector", "sel"+str(i)) for i in range(2)]
+        sequences = [BTree("sequences", "seq"+str(i)) for i in range(6)]
+
+        mainTree = selectors[0]
+        selectors[0].addChild(sequences[0])
+        selectors[0].addChild(sequences[1])
+        selectors[0].addChild(sequences[2])
+        selectors[0].addChild(sequences[3])
+        selectors[1].addChild(sequences[4])
+        selectors[1].addChild(sequences[5])
+
+        checks = [BTree() for i in range(6)]
+
+        checks[0].setName("isGhostDead")
+        checks[0].addCondition("flock == 0")
+
+        checks[1].setName("isFlockFull")
+        checks[1].addCondition("flock == capacity")
+
+        checks[2].setName("flockGTUmbral")
+        checks[2].addCondition("flock > Umbral")
+
+        checks[3].setName("flockLTUmbral")
+        checks[3].addCondition("flock < Umbral")
+        checks[3].addCondition("0 < flock")
+
+        checks[4].setName("powerUpClose")
+        checks[4].addCondition("False")
+        
+        checks[5].setName("pakmanClose")
+        checks[5].addCondition("False")
+
+        fPUPNodes = [BTree(name = "followPowerUp"+str(i)) for i in range(2)]
+        fPakNodes = [BTree(name = "followPakman"+str(i)) for i in range(2)]
+        
+        for i in range(6):
+            sequences[i].addChild(checks[i])
+
+        sequences[2].addChild(selectors[1])
+        
+        #Setting up follow pakman nodes        
+        sequences[1].addChild(fPakNodes[0])
+        sequences[5].addChild(fPakNodes[1])
+
+        #Setting up follow power-up nodes
+        sequences[3].addChild(fPUPNodes[0])
+        sequences[4].addChild(fPUPNodes[1])
+
+        
+        print(mainTree.treeToString())
+
+        
+        return mainTree 
 
 
     def checkIfDeath(self):
@@ -612,6 +779,8 @@ class Game():
             for j in range(self.gameMap.dimensions[1]):
                 if(self.gameMap.getCell(i,j) in range(4,9)):
                     charPos[self.gameMap.getCell(i,j)-4]=(self.cellSize*i,self.cellSize*j)
+            if(self.level == 2):
+                pass#print(charPos)
         return charPos
 
     def getCharPosCenter(self):
@@ -763,19 +932,22 @@ class Game():
                     self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
         
         #For the red and the purple ghost
-        elif(playerId <= 2):
+        elif(playerId <= 2 and playerId>0):
             #If pakman has not been catched
             if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
                 (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-                #print(self.charsPos)
+                #print(self.ghostPos)
                 self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
                 if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                    #print("Corrigiendo direccion", playerId)
                     self.players[playerId].changeDir(self.correctDir(playerId))
                 else:
+                    #print("Sin corregir direccion", not self.checkMovementPlayer(playerId), self.ghostPos)
                     self.paths[playerId - 1] = self.calcPath(None, playerId)
-                    #print(self.paths[playerId - 1], "id", playerId - 1)
+                    #print("Path", self.paths[playerId - 1])
+                    #print(self.paths[playerId - 1], "id", playerId)
                     if(self.paths[playerId - 1]):
                         self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
