@@ -55,7 +55,7 @@ class Game():
         self.cellSize = 50
 
         #Map set-up
-        self.mapToLoad = "map.txt"
+        self.mapToLoad = "map8.txt"
         self.gameMap = map.Map(self.mapToLoad)
         self.originalGameMap = map.Map(self.mapToLoad)
         self.noObstaclesMap = self.gameMap.getNoObstaclesMap()
@@ -137,7 +137,7 @@ class Game():
 
         #Turns on or off the sound
         self.fchannel = pygame.mixer.find_channel()
-        self.sound = False
+        self.sound = True
         
         
         #Turn to true for some fun
@@ -374,6 +374,13 @@ class Game():
                         self.players[0].changeDir(2)
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_RIGHT:
                         self.players[0].changeDir(1)
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_m:
+                        print("follow power up")
+                        self.flockCount = 2
+                    if event.type == pygame.KEYDOWN and event.key==pygame.K_n:
+                        print("follow pakman")
+                        self.distancePowerUp = self.visibleDistance + 1
+                        self.flockCount = 7
 
                 
                 #print("Main Loop")
@@ -383,6 +390,7 @@ class Game():
 
                 if(not death or win):
                     #print(self.charsPos)
+                    self.runTree()
                     for i,p in enumerate(self.players):
                         if(p.alive):
                             self.updateGhostDir(i)
@@ -392,9 +400,11 @@ class Game():
                     # self.checkGhostsCatched()
                     # self.movePlayer(1)
                     # self.movePlayer(0)
+                    
                     death = self.checkIfDeath()
                     #death = False
-                    # win = self.checkIfWin()
+                    win = self.checkIfWin()
+                    self.updateTree()
 
                 self.background = self.drawMap(True)
 
@@ -404,6 +414,27 @@ class Game():
                 pygame.display.flip()
             
             else:
+                if(death):
+                    pygame.mixer.stop()
+                    pygame.mixer.music.load("pacman_death.wav")
+                    pygame.mixer.music.play()
+                    while(pygame.mixer.music.get_busy()):
+                        pass#print("Sigo ocupadisimo")
+                    pygame.event.clear()
+                    for i in range(1,3):
+                        pygame.time.set_timer(pygame.USEREVENT+i, 0)
+                    break
+                if(win):
+                    self.level = 2
+                    self.color = self.black
+                    pygame.mixer.stop()
+                    pygame.mixer.music.load("pacman_win.wav")
+                    pygame.mixer.music.play()
+                    while(pygame.mixer.music.get_busy()):
+                        pass#print("Sigo ocupadisimo")
+                    # pygame.event.clear()
+                    for i in range(1,3):
+                        pygame.time.set_timer(pygame.USEREVENT+i, 0)
                 #print("This is not a main loop")
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT: sys.exit()
@@ -437,8 +468,34 @@ class Game():
 
             self.gameClock.tick(120)
 
+        if(death):
+                print("Acabo el juego")
+                self.__init__(2)
 
+    def updateTree(self):
+        # print("----------updating tree-------------")
+        self.bTree.restartTree()
+        #print(self.bTree.treeToString())
+        self.bTreeData["flock"] = self.flockCount
+        self.distancePakman =  self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.playerPos[0])
+        self.distancePowerUp = self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.powerUpPos)
+        self.bTreeData["distancePakman"] = self.distancePakman
+        self.bTreeData["distancePowerUp"] = self.distancePowerUp
 
+        
+    def runTree(self):
+        count = 0
+        while(count < 2 and (not self.bTree.getActiveNode().isLeaf() or not self.bTree.getActiveNode().isAction())):
+            self.bTree.updateState()
+            #print("dando vuelticas", self.bTree.getActiveNode())
+            #print("running tree count", count)
+            #print(self.bTree.treeToString())
+            # count += 1
+        print("RUN TREE")
+        # print(self.bTree.treeToString())
+        print(self.bTree.getActiveNode())
+        print(self.bTree.getAllData())
+    
     def prepareLevel2(self):
         """
         Prepares environment for the level 2
@@ -462,6 +519,7 @@ class Game():
         self.gameMap = map.Map(self.mapToLoad)
         self.gameMap.matrix = self.gameMap.getLevel2Map()
         self.originalGameMap = map.Map(self.mapToLoad)
+        self.originalGameMap.matrix = self.originalGameMap.getLevel2Map()
         self.AStarMap = self.gameMap.getAStarMap()        
         self.playersCount = self.gameMap.playersCount
 
@@ -482,8 +540,8 @@ class Game():
 
         #Decrease speed
         for i in range(1,self.playersCount):
-            self.players[i].spdx -= 1
-            self.players[i].spdy -= 1
+            self.players[i].spdx -= 2
+            self.players[i].spdy -= 2
 
         #Find path to follow Ms. Pakman
         self.paths = []
@@ -499,29 +557,42 @@ class Game():
         self.playerPos = [( self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize ),
                             ( self.charsPosCenter[0][0]//self.cellSize,self.charsPosCenter[0][1]//self.cellSize )]
 
-        
+
+        #Power up setup
+        self.powerUpTime = 100
+        self.updatePowerUpPos()
 
         self.flock = flock.Flock()
 
-
-        self.updatePowerUpPos()
+        self.flockCount = 1
+        self.capacity = 10
+        self.umbral = 5
         self.visibleDistance = 5
+
+        #BTree setup
         self.bTree = self.createBTree()
-        self.bTreeData = {"flock": 1, "capacity": 10, "umbral": 5, "closeDistance" : self.visibleDistance,
+        self.distancePakman =  self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.playerPos[0])
+        self.distancePowerUp = self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.powerUpPos)
+        self.bTreeData = {"flock": self.flockCount, "capacity": self.capacity, "umbral": self.umbral, "closeDistance" : self.visibleDistance,
                             "distancePakman" : self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.playerPos[0]),
-                            "distancePowerUp" : self.gameMap.getDistanceInCells(*self.powerUpPos,*self.playerPos[0])}
+                            "distancePowerUp" : self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.powerUpPos)}
         # self.bTreeData["distancePakman"] = 3
         # self.bTreeData["distancePowerUp"] = 5
         self.bTree.setData(self.bTreeData)
 
-        print(self.bTree.treeToString())
+
+
+        
         print("---before state update---")
-        self.bTree.updateState()
-        print("---between state update---")
-        self.bTree.updateState()
-        print("---after state update---")
         print(self.bTree.treeToString())
-        print(self.bTree.getActiveNode())
+        # self.bTree.updateState()
+        # print("---between state update---")
+        # self.bTree.updateState()
+        print("---after state update---")
+        # print(self.bTree.treeToString())
+        # print(self.bTree.getActiveNode())
+        # print(self.bTreeData)
+        # print("position ghost and tomato",self.ghostPos[0][0], self.powerUpPos)
         # print(self.bTree.findNode("seq3"))
 
         self.createEvents()
@@ -569,7 +640,7 @@ class Game():
         checks[2].addCondition("flock > umbral")
 
         checks[3].setName("flockLTUmbral")
-        checks[3].addCondition("flock < umbral")
+        checks[3].addCondition("flock <= umbral")
         checks[3].addCondition("0 < flock")
 
         checks[4].setName("powerUpClose")
@@ -582,9 +653,17 @@ class Game():
         fPakNodes = [BTree(name = "followPakman"+str(i)) for i in range(2)]
         endNode = BTree(name = "endNode")
 
+        for node in fPUPNodes:
+            node.setAction(True)
+
+        for node in fPakNodes:
+            node.setAction(True)
+
+        endNode.setAction(True)
+
         
         
-        for i in range(6):
+        for i in range(5):
             sequences[i].addChild(checks[i])
 
         sequences[2].addChild(selectors[1])
@@ -629,11 +708,17 @@ class Game():
                     self.players[i+1].alive = False
 
     def checkIfWin(self):
-        maxCountPacDots = self.forest.maxCount()
-        if(maxCountPacDots == 0):
-            return True
-        else:
-            return False
+        if(self.level == 1):
+            maxCountPacDots = self.forest.maxCount()
+            if(maxCountPacDots == 0):
+                return True
+            else:
+                return False
+        elif(self.level == 2):
+            if(self.bTree.getActiveNode().getName() == "endNode"):
+                return True
+            else:
+                return False
 
     def createEvents(self):
 
@@ -854,30 +939,49 @@ class Game():
                 self.activatePowerUp()
         else:
             if(self.gameMap.getCell(*oldPos) < 4):
+                cell = self.gameMap.getCell(*pos)
+                if(cell == 3):
+                    self.activatePowerUp(playerId)
+                self.gameMap.updateMap(*pos, 4+playerId)
                 self.gameMap.updateMap(*oldPos, self.originalGameMap.getCell(*oldPos))
             
-    def activatePowerUp(self):
+    def activatePowerUp(self, playerId = None):
         """
         Makes the changes necessary to activate the power up effects
         """
-        self.powerUp = True
-        pygame.time.set_timer(pygame.USEREVENT+3, self.powerUpTime)
-        if(not self.fchannel.get_busy()):
-            self.fchannel = pygame.mixer.find_channel()
-            self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
-        else:
-            pass#print("YA ESTABA SONANDO")
-        for i in range(len(self.ghostImages)):
-            self.ghostImages[i] = self.scaredGhostImages
+        if(self.level == 1):
+            self.powerUp = True
+            pygame.time.set_timer(pygame.USEREVENT+3, self.powerUpTime)
+            if(not self.fchannel.get_busy()):
+                self.fchannel = pygame.mixer.find_channel()
+                self.fchannel.play(pygame.mixer.Sound("frightened.wav"), -1)
+            else:
+                pass#print("YA ESTABA SONANDO")
+            for i in range(len(self.ghostImages)):
+                self.ghostImages[i] = self.scaredGhostImages
+        elif(self.level == 2):
+            if(not playerId):
+                playerId = 0
+            if(playerId == 0):
+                self.flockCount -= 1
+            elif(playerId == 1 and self.flockCount ):
+                self.flockCount += 1
+            print("Player", playerId, "picked up a powerUp")
+            pygame.time.set_timer(pygame.USEREVENT+3, self.powerUpTime)
 
     def deactivatePowerUp(self):
         """
         Makes the changes necessary to deactivate the power up effects
         """
-        self.powerUp = False
-        pygame.time.set_timer(pygame.USEREVENT+3, 0)
-        self.fchannel.stop()
-        self.ghostImages = self.originalGhostImages[:]
+        if(self.level == 1):
+            self.powerUp = False
+            pygame.time.set_timer(pygame.USEREVENT+3, 0)
+            self.fchannel.stop()
+            self.ghostImages = self.originalGhostImages[:]
+        elif(self.level == 2):
+            self.updatePowerUpPos()
+            pygame.time.set_timer(pygame.USEREVENT+3, 0)
+            pass
 
     def checkMovementPlayer(self,playerId):
         #Checks if the player can move in the desired direction using the borders and the center
@@ -1049,12 +1153,12 @@ class Game():
                             pass
                             #print("YA NO HAY MAS CAMINO PERO NO HE LLEGADO")
         elif(self.level == 2):
-
+            destination = None
             if("followPowerUp" in self.bTree.getActiveNode().getName() ):
                 destination = self.powerUpPos
             elif("followPakman" in self.bTree.getActiveNode().getName()):
                 destination = self.playerPos[0]
-            if(playerId <= 2 and playerId>0):
+            if(playerId <= 2 and playerId>0 and destination):
             #If destination has not been reached
                 if( (self.charsPos[playerId][0] // self.cellSize != destination[0] // self.cellSize) or
                     (self.charsPos[playerId][1] // self.cellSize != destination[1] // self.cellSize) ):

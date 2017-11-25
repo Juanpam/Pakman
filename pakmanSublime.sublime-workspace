@@ -4,12 +4,68 @@
 		"selected_items":
 		[
 			[
+				"follo",
+				"followPakman"
+			],
+			[
 				"power",
-				"powerUp\tstatement"
+				"powerUp"
+			],
+			[
+				"dista",
+				"distancePowerUp"
+			],
+			[
+				"bTree",
+				"bTreeData\tstatement"
+			],
+			[
+				"update",
+				"updatePowerUpPos\tfunction"
+			],
+			[
+				"powerUp",
+				"powerUpPos\tstatement"
 			],
 			[
 				"get",
-				"getCell\tfunction"
+				"getActiveNode"
+			],
+			[
+				"game",
+				"gameMap"
+			],
+			[
+				"addC",
+				"addCondition\tfunction"
+			],
+			[
+				"add",
+				"addChild\tfunction"
+			],
+			[
+				"running",
+				"runningChild\tstatement"
+			],
+			[
+				"dir",
+				"direccion"
+			],
+			[
+				"char",
+				"charId-4"
+			],
+			[
+				"create",
+				"createEvents\tfunction"
+			],
+			[
+				"load",
+				"load"
+			],
+			[
+				"b",
+				"background"
 			],
 			[
 				"check",
@@ -64,10 +120,6 @@
 				"maxCountParent\tstatement"
 			],
 			[
-				"update",
-				"updatePacDoteZone"
-			],
-			[
 				"find",
 				"findPacDotesZones\tfunction"
 			],
@@ -98,10 +150,6 @@
 			[
 				"gh",
 				"ghostPos\tstatement"
-			],
-			[
-				"game",
-				"gameMap\tstatement"
 			],
 			[
 				"player",
@@ -188,10 +236,6 @@
 				"__init__\tfunction"
 			],
 			[
-				"char",
-				"charsPos\tstatement"
-			],
-			[
 				"getC",
 				"getCharPos\tfunction"
 			],
@@ -230,10 +274,6 @@
 			[
 				"initial",
 				"initialYMSPak\tstatement"
-			],
-			[
-				"load",
-				"loadSpriteSheet"
 			],
 			[
 				"row",
@@ -416,10 +456,6 @@
 				"requiredByParent"
 			],
 			[
-				"create",
-				"createMaterial\tfunction"
-			],
-			[
 				"net",
 				"netRequirementsWeek\tstatement"
 			],
@@ -478,42 +514,6 @@
 			[
 				"inde",
 				"indexProductsItems"
-			],
-			[
-				"parent",
-				"parentIndexItem"
-			],
-			[
-				"paren",
-				"parentIndex\tstatement"
-			],
-			[
-				"pare",
-				"parentName\tparam"
-			],
-			[
-				"wi",
-				"winfo_toplevel"
-			],
-			[
-				"col",
-				"Column"
-			],
-			[
-				"top",
-				"winfo_toplevel\tfunction"
-			],
-			[
-				"grid_s",
-				"grid_slaves\tfunction"
-			],
-			[
-				"kind",
-				"kind\tstatement"
-			],
-			[
-				"modal",
-				"modalDialog"
 			]
 		]
 	},
@@ -523,9 +523,38 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 36676,
+				"buffer_size": 47394,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "btree.py",
+			"settings":
+			{
+				"buffer_size": 7901,
+				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "\"\"\""
+			}
+		},
+		{
+			"file": "map.py",
+			"settings":
+			{
+				"buffer_size": 5758,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "flock.py",
+			"settings":
+			{
+				"buffer_size": 160,
+				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "\"\"\""
 			}
 		}
 	],
@@ -665,9 +694,11 @@
 	],
 	"file_history":
 	[
-		"/X/gitProyects/Pakman/map8.txt",
+		"/X/gitProyects/Pakman/map.txt",
 		"/X/gitProyects/Pakman/player.py",
 		"/X/gitProyects/Pakman/map.py",
+		"/X/Google Drive/IA videojuegos/behavior tree",
+		"/X/gitProyects/Pakman/map8.txt",
 		"/X/gitProyects/Pakman/main.py",
 		"/X/gitProyects/Pakman/dforest.py",
 		"/X/gitProyects/Pakman/map7.txt",
@@ -678,7 +709,6 @@
 		"/X/gitProyects/Pakman/map5.txt",
 		"/C/Windows/Logs/DISM/dism.log",
 		"/C/Windows/System32/drivers/etc/hosts",
-		"/X/gitProyects/Pakman/map.txt",
 		"/X/gitProyects/Pakman/terminal.glue",
 		"/X/gitProyects/Pakman/__pycache__/terminal.glue",
 		"/C/Users/JuanPablo/AppData/Roaming/Sublime Text 3/Packages/User/Glue.sublime-settings",
@@ -791,12 +821,11 @@
 		"/X/test/test.py",
 		"/X/test/csv.py",
 		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/MainActivity.java",
-		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/adminSQLiteOpenHelper.java",
-		"/C/Users/JuanPablo/AppData/Local/Programs/Python/Python35-32/lib/tkinter/messagebox.py"
+		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/adminSQLiteOpenHelper.java"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 41.0
 	},
 	"find_in_files":
 	{
@@ -810,6 +839,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self.charsPos[0]",
+			"^ *print",
+			"AStarMap",
+			"3",
+			"\"sel0\"",
+			"runningChild",
+			"^ +print",
+			" +print",
+			" print",
+			"^ print",
+			"print",
+			"^print",
+			"print",
+			"metal",
+			"level",
 			"drawch",
 			"playersInMap",
 			"self.color",
@@ -832,7 +876,7 @@
 		"highlight": true,
 		"in_selection": false,
 		"preserve_case": false,
-		"regex": false,
+		"regex": true,
 		"replace_history":
 		[
 		],
@@ -854,15 +898,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 36676,
+						"buffer_size": 47394,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								14035,
-								14035
+								45938,
+								45938
 							]
 						],
 						"settings":
@@ -880,6 +924,10 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -887,10 +935,132 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4858.0,
+						"translation.y": 15858.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "btree.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7901,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3430,
+								3430
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"auto_name": "\"\"\"",
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1973.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "map.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5758,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5379,
+								5379
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1485.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "flock.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 160,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								160,
+								160
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"auto_name": "\"\"\"",
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -898,7 +1068,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 22.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -929,7 +1099,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 160.0
+		"height": 102.0
 	},
 	"output.find_results":
 	{
