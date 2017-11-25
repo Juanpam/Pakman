@@ -259,7 +259,7 @@ class Game():
                     death = self.checkIfDeath()
                     #death = False
                     #win = self.checkIfWin()
-                    #win = True
+                    win = True
                     self.background=self.drawMap(False)
                     self.screen.fill(self.color)
                     self.screen.blit(self.background, (0,0))
@@ -375,12 +375,14 @@ class Game():
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_RIGHT:
                         self.players[0].changeDir(1)
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_m:
-                        print("follow power up")
-                        self.flockCount = 2
+                        pass
+                        # print("follow power up")
+                        # self.flockCount = 2
                     if event.type == pygame.KEYDOWN and event.key==pygame.K_n:
+                        pass
                         print("follow pakman")
-                        self.distancePowerUp = self.visibleDistance + 1
-                        self.flockCount = 7
+                        # self.distancePowerUp = self.visibleDistance + 1
+                        # self.flockCount = 7
 
                 
                 #print("Main Loop")
@@ -396,6 +398,8 @@ class Game():
                             self.updateGhostDir(i)
                             self.movePlayer(i)
                             self.updatePlayerPos(i)
+                        if(i >= 2):
+                            self.flock.updateFollowerByID(i-2)
                     
                     # self.checkGhostsCatched()
                     # self.movePlayer(1)
@@ -405,6 +409,7 @@ class Game():
                     #death = False
                     win = self.checkIfWin()
                     self.updateTree()
+
 
                 self.background = self.drawMap(True)
 
@@ -509,10 +514,7 @@ class Game():
             self.refreshImagesTime = 70
             pygame.time.set_timer(pygame.USEREVENT+2, 5500)
 
-        #Big pink ghost 
-        self.ghostImages[0], self.ghostImages[5] = self.ghostImages[5], self.ghostImages[0]
-        self.ghostImages[0] = [pygame.transform.scale2x(i) for i in self.ghostImages[0]]
-        self.images[4] = self.ghostImages[0][0]
+        
 
         #Update map, charsPos and playersCount
         self.mapToLoad = "map.txt"
@@ -522,6 +524,12 @@ class Game():
         self.originalGameMap.matrix = self.originalGameMap.getLevel2Map()
         self.AStarMap = self.gameMap.getAStarMap()        
         self.playersCount = self.gameMap.playersCount
+
+        #Big pink ghost 
+        self.loadSpriteSheet()
+        self.ghostImages[0], self.ghostImages[5] = self.ghostImages[5], self.ghostImages[0]
+        self.ghostImages[0] = [pygame.transform.scale2x(i) for i in self.ghostImages[0]]
+        self.images[4] = self.ghostImages[0][0]
 
         self.charsPos = self.getCharsPos() #Characters top-left edge position
         #print(self.charsPos) 
@@ -562,7 +570,7 @@ class Game():
         self.powerUpTime = 100
         self.updatePowerUpPos()
 
-        self.flock = flock.Flock()
+        self.flock = flock.Flock(self.players[1], self.cellSize)
 
         self.flockCount = 1
         self.capacity = 10
@@ -583,12 +591,12 @@ class Game():
 
 
         
-        print("---before state update---")
-        print(self.bTree.treeToString())
+        # print("---before state update---")
+        # print(self.bTree.treeToString())
         # self.bTree.updateState()
         # print("---between state update---")
         # self.bTree.updateState()
-        print("---after state update---")
+        # print("---after state update---")
         # print(self.bTree.treeToString())
         # print(self.bTree.getActiveNode())
         # print(self.bTreeData)
@@ -745,7 +753,13 @@ class Game():
                 self.images[3] = self.msPakmanImages[p.lastSprite]
             else:
                 #print("lala",p.lastSprite,i)
-                self.images[3+i] = self.ghostImages[i-1][p.lastSprite]
+                if(self.level == 1):
+                    self.images[3+i] = self.ghostImages[i-1][p.lastSprite]
+                else:
+                    if(i == 1):
+                        self.images[3+i] = self.ghostImages[i-1][p.lastSprite]
+                    if(i >= 2):
+                        self.images[3+i] = self.ghostImages[self.flockGhostDefaultImage][p.lastSprite]
 
 
 
@@ -888,6 +902,10 @@ class Game():
         for charId in self.gameMap.playersInMap:
             if(self.players[charId-4].alive):
                 background.blit(self.images[charId-1], (self.charsPos[charId-4][0], self.charsPos[charId-4][1]))
+        if(self.level == 2):
+            for charId in range(2, self.playersCount):
+                if(self.players[charId].alive):
+                    background.blit(self.images[charId+3], (self.charsPos[charId][0], self.charsPos[charId][1]))
         return background
 
     def getCharsPos(self):
@@ -905,6 +923,7 @@ class Game():
         charPosCenter = []
         for i in range(len(self.charsPos)):
             #print("charposcenter",i)
+            # print("Len en center", len(self.images))
             charPosCenter.append((self.charsPos[i][0]+(self.images[3+i].get_width()//2),self.charsPos[i][1]+(self.images[3+i].get_height()//2)))
         return charPosCenter
 
@@ -964,10 +983,40 @@ class Game():
                 playerId = 0
             if(playerId == 0):
                 self.flockCount -= 1
-            elif(playerId == 1 and self.flockCount ):
+                if(self.flock.flockCount):
+                    self.removeGhost()
+            elif(playerId == 1 and self.flockCount):
+                print("Power up recogido!")
                 self.flockCount += 1
+                #self.addGhost()
             print("Player", playerId, "picked up a powerUp")
             pygame.time.set_timer(pygame.USEREVENT+3, self.powerUpTime)
+
+    def removeGhost(self):
+        pass
+
+    def addGhost(self):
+        """
+        adds a ghost to the flock
+        """
+        print("Se agrego un fantasma")
+        self.gameMap.updateMap(*self.powerUpPos, 5)
+        self.originalGameMap.updateMap(*self.powerUpPos, 5)
+        self.playersCount += 1
+        self.players.append(player.ghost())
+        self.charsPos.append((self.powerUpPos[0]*self.cellSize,self.powerUpPos[1]*self.cellSize))
+        self.players[-1].posx = self.charsPos[-1][0]
+        self.players[-1].posy = self.charsPos[-1][1]
+        self.flockGhostDefaultImage = 4
+        self.images.append(self.ghostImages[self.flockGhostDefaultImage][0])
+        self.charsPosCenter = self.getCharPosCenter()
+        self.ghostPos = [[( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize ),
+                            ( self.charsPosCenter[p][0]//self.cellSize,self.charsPosCenter[p][1]//self.cellSize )] for p in range(1,len(self.players))]
+        
+        print("self.images len", len(self.images))
+
+        print("self.players[:-1]", self.players[-1])
+        self.flock.addFollower(self.players[-1])
 
     def deactivatePowerUp(self):
         """
@@ -1011,16 +1060,32 @@ class Game():
     def movePlayer(self,playerId):
         #print(self.charsPosCenter)
         
-        if(self.checkMovementPlayer(playerId)):
-            self.players[playerId].updatePos()
-            if(playerId == 0):
-                #print("Cambiando posicion personaje")
-                self.playerPos[0] = (self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
-        
+        if(self.level == 1):
+            if(self.checkMovementPlayer(playerId)):
+                self.players[playerId].updatePos()
+                if(playerId == 0):
+                    #print("Cambiando posicion personaje")
+                    self.playerPos[0] = (self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
             
-        self.charsPos[playerId] = self.players[playerId].getPos()
-        self.charsPosCenter=self.getCharPosCenter()
-        self.updateMapPlayer(playerId)
+                
+            self.charsPos[playerId] = self.players[playerId].getPos()
+            self.charsPosCenter=self.getCharPosCenter()
+            self.updateMapPlayer(playerId)
+
+        elif(self.level == 2):
+            if(self.checkMovementPlayer(playerId)):
+                if(playerId <= 1 and self.checkMovementPlayer(playerId)):
+                    self.players[playerId].updatePos()
+                else:
+                    self.players[playerId].updatePosNoDir()
+                if(playerId == 0):
+                    #print("Cambiando posicion personaje")
+                    self.playerPos[0] = (self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+            
+                
+            self.charsPos[playerId] = self.players[playerId].getPos()
+            self.charsPosCenter=self.getCharPosCenter()
+            self.updateMapPlayer(playerId)
 
     def correctDir(self, playerId):
         """
@@ -1158,7 +1223,7 @@ class Game():
                 destination = self.powerUpPos
             elif("followPakman" in self.bTree.getActiveNode().getName()):
                 destination = self.playerPos[0]
-            if(playerId <= 2 and playerId>0 and destination):
+            if(playerId == 1 and destination):
             #If destination has not been reached
                 if( (self.charsPos[playerId][0] // self.cellSize != destination[0] // self.cellSize) or
                     (self.charsPos[playerId][1] // self.cellSize != destination[1] // self.cellSize) ):

@@ -49,6 +49,10 @@ class genericPlayer():
 		if(self.dir==4):
 			self.posy -= self.spdy
 
+	def updatePosNoDir(self):
+		self.posx += self.spdx
+		self.posy += self.spdy
+
 	def getPos(self):
 		return (self.posx,self.posy)
 

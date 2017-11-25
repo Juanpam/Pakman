@@ -4,8 +4,120 @@
 		"selected_items":
 		[
 			[
+				"add",
+				"addChild"
+			],
+			[
+				"updatePos",
+				"updatePosNoDir\tfunction"
+			],
+			[
+				"flock",
+				"flockGhostDefaultImage"
+			],
+			[
+				"floc",
+				"flockGhostDefaultImage\tstatement"
+			],
+			[
+				"chars",
+				"charPos"
+			],
+			[
+				"cell",
+				"cellsize"
+			],
+			[
+				"targ",
+				"targetToString\tfunction"
+			],
+			[
+				"desire",
+				"desiredVelocity\tstatement"
+			],
+			[
+				"desi",
+				"desiredVelocity\tstatement"
+			],
+			[
+				"foll",
+				"followers\tstatement"
+			],
+			[
+				"norm",
+				"normalizedVector\tstatement"
+			],
+			[
+				"update",
+				"updatePos\tfunction"
+			],
+			[
+				"fol",
+				"followerId\tparam"
+			],
+			[
+				"foo",
+				"followerId\tparam"
+			],
+			[
+				"arr",
+				"arriveForces"
+			],
+			[
+				"fo",
+				"followerId\tparam"
+			],
+			[
 				"follo",
-				"followPakman"
+				"followerId\tparam"
+			],
+			[
+				"evade",
+				"evadeBaseForce"
+			],
+			[
+				"sepa",
+				"separationBaseForce"
+			],
+			[
+				"sp",
+				"spdx"
+			],
+			[
+				"eva",
+				"evadeForces\tstatement"
+			],
+			[
+				"sep",
+				"separationForces\tstatement"
+			],
+			[
+				"powe",
+				"powerUpTime\tstatement"
+			],
+			[
+				"origi",
+				"originalGameMap\tstatement"
+			],
+			[
+				"distanceP",
+				"distancePowerUp"
+			],
+			[
+				"tree",
+				"treeToString\tfunction"
+			],
+			[
+				"distance",
+				"distancePowerUp"
+			],
+			[
+				"getD",
+				"getAllData\tfunction"
+			],
+			[
+				"is",
+				"isAction\tfunction"
 			],
 			[
 				"power",
@@ -18,10 +130,6 @@
 			[
 				"bTree",
 				"bTreeData\tstatement"
-			],
-			[
-				"update",
-				"updatePowerUpPos\tfunction"
 			],
 			[
 				"powerUp",
@@ -38,10 +146,6 @@
 			[
 				"addC",
 				"addCondition\tfunction"
-			],
-			[
-				"add",
-				"addChild\tfunction"
 			],
 			[
 				"running",
@@ -78,10 +182,6 @@
 			[
 				"sac",
 				"scaredGhostImages\tstatement"
-			],
-			[
-				"origi",
-				"originalGhostImages\tstatement"
 			],
 			[
 				"ghostI",
@@ -198,10 +298,6 @@
 			[
 				"tra",
 				"translatePath\tfunction"
-			],
-			[
-				"chars",
-				"charsPosCenter\tstatement"
 			],
 			[
 				"Astar",
@@ -418,143 +514,28 @@
 			[
 				"part",
 				"partialWeeksChild\tstatement"
-			],
-			[
-				"index",
-				"indexOffset"
-			],
-			[
-				"req",
-				"reqByparent\tparam"
-			],
-			[
-				"require",
-				"requiredByParent\tstatement"
-			],
-			[
-				"text",
-				"textvariable"
-			],
-			[
-				"dis",
-				"displayNetRequirements"
-			],
-			[
-				"indexM",
-				"indexMaterialsItems\tstatement"
-			],
-			[
-				"requ",
-				"requiredByParent\tstatement"
-			],
-			[
-				"child",
-				"childrenRequired"
-			],
-			[
-				"required",
-				"requiredByParent"
-			],
-			[
-				"net",
-				"netRequirementsWeek\tstatement"
-			],
-			[
-				"availa",
-				"availablesLeft\tstatement"
-			],
-			[
-				"requi",
-				"requirementsWeek\tstatement"
-			],
-			[
-				"ava",
-				"availablesAlreadyUsed\tstatement"
-			],
-			[
-				"d",
-				"duration\tstatement"
-			],
-			[
-				"u",
-				"updateTotalDuration\tfunction"
-			],
-			[
-				"t",
-				"totalDuration"
-			],
-			[
-				"tota",
-				"totalDuration\tstatement"
-			],
-			[
-				"up",
-				"updateTotalDuration"
-			],
-			[
-				"chi",
-				"childrenRequired\tstatement"
-			],
-			[
-				"pad",
-				"padx"
-			],
-			[
-				"moda",
-				"modalDialog\tfunction"
-			],
-			[
-				"delEle",
-				"delElement"
-			],
-			[
-				"delElement",
-				"delElementButton"
-			],
-			[
-				"inde",
-				"indexProductsItems"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "main.py",
-			"settings":
-			{
-				"buffer_size": 47394,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "btree.py",
-			"settings":
-			{
-				"buffer_size": 7901,
-				"encoding": "UTF-8",
-				"line_ending": "Windows",
-				"name": "\"\"\""
-			}
-		},
-		{
-			"file": "map.py",
-			"settings":
-			{
-				"buffer_size": 5758,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "flock.py",
 			"settings":
 			{
-				"buffer_size": 160,
+				"buffer_size": 5995,
 				"encoding": "UTF-8",
 				"line_ending": "Windows",
 				"name": "\"\"\""
+			}
+		},
+		{
+			"file": "main.py",
+			"settings":
+			{
+				"buffer_size": 54345,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -694,12 +675,13 @@
 	],
 	"file_history":
 	[
-		"/X/gitProyects/Pakman/map.txt",
 		"/X/gitProyects/Pakman/player.py",
 		"/X/gitProyects/Pakman/map.py",
+		"/X/gitProyects/Pakman/btree.py",
+		"/X/gitProyects/Pakman/main.py",
+		"/X/gitProyects/Pakman/map.txt",
 		"/X/Google Drive/IA videojuegos/behavior tree",
 		"/X/gitProyects/Pakman/map8.txt",
-		"/X/gitProyects/Pakman/main.py",
 		"/X/gitProyects/Pakman/dforest.py",
 		"/X/gitProyects/Pakman/map7.txt",
 		"/X/gitProyects/Pakman/astar.py",
@@ -820,8 +802,7 @@
 		"/X/Git Proyects/Pro---Industries/test.csv",
 		"/X/test/test.py",
 		"/X/test/csv.py",
-		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/MainActivity.java",
-		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/adminSQLiteOpenHelper.java"
+		"/X/AndroidStudioProjects/SQLLite2/app/src/main/java/com/example/paulac/sql_lite/MainActivity.java"
 	],
 	"find":
 	{
@@ -839,6 +820,28 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"movePlayer",
+			"self.flock",
+			"updateImages",
+			"flockGhostDefaultImage",
+			"addGhost",
+			"loadSpriteSheet",
+			"addG",
+			"loadSprite",
+			"self.images",
+			"updateI",
+			"loadS",
+			"loadspriteS",
+			"get_width",
+			"i",
+			"playerId",
+			"10",
+			"BaseMagnitude",
+			"Magnitude",
+			"target.dir",
+			"target",
+			"distanceFromTarget",
+			"self.activeNode =",
 			"self.charsPos[0]",
 			"^ *print",
 			"AStarMap",
@@ -889,24 +892,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "main.py",
+					"file": "flock.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 47394,
+						"buffer_size": 5995,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								45938,
-								45938
+								5518,
+								5518
 							]
 						],
 						"settings":
@@ -920,51 +923,6 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 15858.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "btree.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7901,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3430,
-								3430
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
 								},
 								{
 									"characters": ".",
@@ -976,27 +934,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1973.0,
+						"translation.y": 760.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "map.py",
+					"buffer": 1,
+					"file": "main.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5758,
+						"buffer_size": 54345,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5379,
-								5379
+								15198,
+								15198
 							]
 						],
 						"settings":
@@ -1017,50 +975,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1485.0,
+						"translation.y": 5441.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "flock.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 160,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								160,
-								160
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"auto_name": "\"\"\"",
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -1068,7 +986,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 22.0
 	},
 	"input":
 	{
@@ -1099,7 +1017,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 102.0
+		"height": 286.0
 	},
 	"output.find_results":
 	{
@@ -1109,7 +1027,7 @@
 	"project": "pakmanSublime.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 48.0
 	},
 	"save_all_on_build": true,
 	"select_file":
