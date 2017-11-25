@@ -24,6 +24,8 @@ class BTree():
             name = str(id(self))
         self.name = name
 
+        assert self.type in self.__valid_types__
+
     def __str__(self):
         string = "Tree Id: "+str(id(self))+" | Name: "+ self.name +" | Type: "+str(self.type)+" | State: "+self.getState()
         return string
@@ -49,8 +51,10 @@ class BTree():
     def getAllData(self):
         return self.data
 
-    def setData(self, key, value):
-        self.data[key] = value
+    def setData(self, data):
+        self.data = data
+        for child in self.child:
+            child.setData(data)
 
     def removeChild(self,child):
         self.child.remove(child)
@@ -67,9 +71,9 @@ class BTree():
         if(self.isLeaf()):
             ans = True
             for c in self.conditions:
-                if not eval(c, self.data):
+                if not eval(c, self.data.copy()):
                     ans = False
-                print("Checking condition",c,"Result:", eval(c, self.data))
+                print("Checking condition",c,"Result:", eval(c, self.data.copy()))
             return ans
 
     def setReady(self, ready):
@@ -77,6 +81,8 @@ class BTree():
 
     def updateState(self):
         print(self)
+        print("datos")
+        print(self.data)
         if(self.isLeaf()):
             print("In leaf")
             if(self.state == "running"):
@@ -94,16 +100,24 @@ class BTree():
                     self.state = "success"
                 else:   
                     if(self.child[self.rcIndex].getState() == "running"):
-                        print("Updating child")
+                        print("Updating child",str(self.child[self.rcIndex]))
                         self.child[self.rcIndex].updateState()
-                        print("Child updated")
+                        print("Child updated",str(self.child[self.rcIndex]))
+                        if(self.child[self.rcIndex].getActiveNode() != self.child[self.rcIndex]):
+                            self.activeNode = self.child[self.rcIndex].getActiveNode()
                         if(self.child[self.rcIndex].getState() == "fail"):
                             self.state = "fail"
                         elif(self.child[self.rcIndex].getState() == "success"):
                             self.activeNode = self.child[self.rcIndex].getActiveNode()
+                            print("Actualizando activeNode", self.activeNode)
                             self.rcIndex += 1
+                            print("DEBUG", self.rcIndex)
+                            if(self.rcIndex != len(self.child)):
+                                print("debug", self.child[self.rcIndex].isLeaf())
                             if(self.rcIndex == len(self.child) or not self.child[self.rcIndex].isLeaf()):
+                                #print("DEBUG", self.rcIndex, self.child[self.rcIndex].isLeaf())
                                 self.updateState()
+                        
                         
         
         elif(self.type == "selector"):
@@ -113,9 +127,13 @@ class BTree():
                     self.state = "fail"
                 else:
                     if(self.child[self.rcIndex].getState() == "running"):
-                        print("Updating child")
+                        print("Updating child", str(self.child[self.rcIndex]))
                         self.child[self.rcIndex].updateState()
-                        print("Child updated")
+                        print("Child updated", str(self.child[self.rcIndex]))
+
+                        if(self.child[self.rcIndex].getActiveNode() != self.child[self.rcIndex]):
+                            self.activeNode = self.child[self.rcIndex].getActiveNode()
+                            print("Actualizando activeNode", self.activeNode)
                         if(self.child[self.rcIndex].getState() == "fail"):
                             self.rcIndex += 1
 
@@ -123,7 +141,10 @@ class BTree():
                             self.updateState()
                         elif(self.child[self.rcIndex].getState() == "success"):
                             self.activeNode = self.child[self.rcIndex].getActiveNode()
+                            print("Actualizando activeNode", self.activeNode)
                             self.state = "success"
+
+
 
                     
     def restartTree(self):
@@ -150,6 +171,20 @@ class BTree():
     def runTree(self):
         pass
 
+    def findNode(self, name):
+        if(self.getName() == name):
+            return self
+        else:
+            if(self.isLeaf()):
+                return None
+            else:
+                for c in self.child:
+                    ans = c.findNode(name)
+                    if ans:
+                        return ans
+                return None
+
+
     def treeToString(self):
         string = str(self)
         if(not self.isLeaf()):
@@ -165,10 +200,10 @@ class BTree():
 
 def main():
     tree = BTree()
-    tree.addData("x", 6)
+    # tree.addData("x", 6)
     tree.addCondition("x == 5")
     tree2 = BTree()
-    tree2.addData("y", 6)
+    # tree2.addData("y", 6)
     tree2.addCondition("y < 5")
     tree3 = BTree("selector")
     # print(tree.checkConditions(), tree2.checkConditions())
@@ -185,6 +220,8 @@ def main():
     tree4 = BTree()
     tree4.addChild(tree3)
 
+    tree4.addData("x", 6)
+    tree4.addData("y", 6)
 
     print("Before",tree,tree2,treeT,tree3,tree4,"",sep="\n")
     tree4.updateState()

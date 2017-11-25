@@ -144,7 +144,17 @@ class Map():
                             runAwayMap[v][u] = 1
 
         return runAwayMap
-    
+    def getLevel2Map(self):
+        """
+        Returns a map with no tomatoes for the level 2
+        """
+        level2Map = [[c if c!=3 else 0 for c in r] for r in self.matrix]
+        # for i in range(len(self.matrix)):
+        #     for j in range(len(self.matrix[i])):
+        #         if(self.matrix[i][j]==1):
+        #             level2Map[i][j] = 1
+        return level2Map
+
     def updatePlayersCount(self):
         """
         Updates the players count using the current map

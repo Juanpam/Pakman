@@ -452,9 +452,6 @@ class Game():
             self.refreshImagesTime = 70
             pygame.time.set_timer(pygame.USEREVENT+2, 5500)
 
-
-        bTree = self.createBTree()
-
         #Big pink ghost 
         self.ghostImages[0], self.ghostImages[5] = self.ghostImages[5], self.ghostImages[0]
         self.ghostImages[0] = [pygame.transform.scale2x(i) for i in self.ghostImages[0]]
@@ -463,6 +460,7 @@ class Game():
         #Update map, charsPos and playersCount
         self.mapToLoad = "map.txt"
         self.gameMap = map.Map(self.mapToLoad)
+        self.gameMap.matrix = self.gameMap.getLevel2Map()
         self.originalGameMap = map.Map(self.mapToLoad)
         self.AStarMap = self.gameMap.getAStarMap()        
         self.playersCount = self.gameMap.playersCount
@@ -505,7 +503,36 @@ class Game():
 
         self.flock = flock.Flock()
 
+
+        self.updatePowerUpPos()
+        self.visibleDistance = 5
+        self.bTree = self.createBTree()
+        self.bTreeData = {"flock": 1, "capacity": 10, "umbral": 5, "closeDistance" : self.visibleDistance,
+                            "distancePakman" : self.gameMap.getDistanceInCells(*self.ghostPos[0][0],*self.playerPos[0]),
+                            "distancePowerUp" : self.gameMap.getDistanceInCells(*self.powerUpPos,*self.playerPos[0])}
+        # self.bTreeData["distancePakman"] = 3
+        # self.bTreeData["distancePowerUp"] = 5
+        self.bTree.setData(self.bTreeData)
+
+        print(self.bTree.treeToString())
+        print("---before state update---")
+        self.bTree.updateState()
+        print("---between state update---")
+        self.bTree.updateState()
+        print("---after state update---")
+        print(self.bTree.treeToString())
+        print(self.bTree.getActiveNode())
+        # print(self.bTree.findNode("seq3"))
+
         self.createEvents()
+
+    def updatePowerUpPos(self):
+        xmax, ymax = self.gameMap.dimensions[0], self.gameMap.dimensions[1] 
+        x, y = random.randrange(xmax), random.randrange(ymax)
+        while(self.gameMap.getCell(x,y) != 0):
+            x, y = random.randrange(xmax), random.randrange(ymax)
+        self.powerUpPos = (x, y)
+        self.gameMap.updateMap(x, y, 3)
 
     def genRandomPowerUpPos(self, background):
 
@@ -520,7 +547,7 @@ class Game():
         """
         
         selectors = [BTree("selector", "sel"+str(i)) for i in range(2)]
-        sequences = [BTree("sequences", "seq"+str(i)) for i in range(6)]
+        sequences = [BTree("sequence", "seq"+str(i)) for i in range(6)]
 
         mainTree = selectors[0]
         selectors[0].addChild(sequences[0])
@@ -539,20 +566,23 @@ class Game():
         checks[1].addCondition("flock == capacity")
 
         checks[2].setName("flockGTUmbral")
-        checks[2].addCondition("flock > Umbral")
+        checks[2].addCondition("flock > umbral")
 
         checks[3].setName("flockLTUmbral")
-        checks[3].addCondition("flock < Umbral")
+        checks[3].addCondition("flock < umbral")
         checks[3].addCondition("0 < flock")
 
         checks[4].setName("powerUpClose")
-        checks[4].addCondition("False")
+        checks[4].addCondition("distancePowerUp <= closeDistance")
         
         checks[5].setName("pakmanClose")
-        checks[5].addCondition("False")
+        checks[5].addCondition("distancePakman <= closeDistance")
 
         fPUPNodes = [BTree(name = "followPowerUp"+str(i)) for i in range(2)]
         fPakNodes = [BTree(name = "followPakman"+str(i)) for i in range(2)]
+        endNode = BTree(name = "endNode")
+
+        
         
         for i in range(6):
             sequences[i].addChild(checks[i])
@@ -567,8 +597,11 @@ class Game():
         sequences[3].addChild(fPUPNodes[0])
         sequences[4].addChild(fPUPNodes[1])
 
+        #Setting up endNode
+        sequences[0].addChild(endNode)
+
         
-        print(mainTree.treeToString())
+        
 
         
         return mainTree 
@@ -920,100 +953,125 @@ class Game():
         """
         Updates the ghost direction
         """
-        if(self.powerUp and playerId>0):
-            #print(self.charsPos)
-            self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
-            if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
-                self.players[playerId].changeDir(self.correctDir(playerId))
-            else:
-                self.paths[playerId - 1] = self.calcPath(self.gameMap.getRunawayMap(), playerId, self.gameMap.getFarthestEmptyPoint(*self.playerPos[0]))
-                #print(self.paths[playerId - 1], "id", playerId - 1)
-                if(self.paths[playerId - 1]):
-                    self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
-        
-        #For the red and the purple ghost
-        elif(playerId <= 2 and playerId>0):
-            #If pakman has not been catched
-            if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
-                (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
-
-                #print(self.ghostPos)
+        if(self.level == 1):
+            if(self.powerUp and playerId>0):
+                #print(self.charsPos)
                 self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
-
                 if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
-                    #print("Corrigiendo direccion", playerId)
                     self.players[playerId].changeDir(self.correctDir(playerId))
                 else:
-                    #print("Sin corregir direccion", not self.checkMovementPlayer(playerId), self.ghostPos)
-                    self.paths[playerId - 1] = self.calcPath(None, playerId)
-                    #print("Path", self.paths[playerId - 1])
-                    #print(self.paths[playerId - 1], "id", playerId)
+                    self.paths[playerId - 1] = self.calcPath(self.gameMap.getRunawayMap(), playerId, self.gameMap.getFarthestEmptyPoint(*self.playerPos[0]))
+                    #print(self.paths[playerId - 1], "id", playerId - 1)
                     if(self.paths[playerId - 1]):
                         self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+            
+            #For the red and the purple ghost
+            elif(playerId <= 2 and playerId>0):
+                #If pakman has not been catched
+                if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+                    (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
-        #For the purple ghost
-        # elif(playerId == 2):
-        #     #If pakman has not been catched
-        #     if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
-        #         (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
+                    #print(self.ghostPos)
+                    self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
-        #         #print(self.charsPos)
-        #         self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
-
-        #         if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
-        #             self.players[playerId].changeDir(self.correctDir(playerId))
-        #         else:
-        #             self.paths[playerId - 1] = self.calcPath(None, 2)
-        #             #print(self.path)
-        #             if(self.paths[playerId - 1]):
-        #                 self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
-
-        #For the orange ghost
-        elif(playerId == 3):
-            #If pakman has not been catched
-            if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
-                (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
-
-                self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
-
-                #If the ghost is not able to move then correct it's direction
-                if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                    if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                        #print("Corrigiendo direccion", playerId)
                         self.players[playerId].changeDir(self.correctDir(playerId))
-                else:
-                    self.paths[playerId - 1] = self.calcPath(None, playerId)
-                    self.noObstaclesPath = self.calcPath(self.noObstaclesMap, playerId)
-                    if(len(self.noObstaclesPath) < self.visibleDistance and 
-                        self.paths[playerId - 1] == self.noObstaclesPath):
+                    else:
+                        #print("Sin corregir direccion", not self.checkMovementPlayer(playerId), self.ghostPos)
+                        self.paths[playerId - 1] = self.calcPath(None, playerId)
+                        #print("Path", self.paths[playerId - 1])
+                        #print(self.paths[playerId - 1], "id", playerId)
                         if(self.paths[playerId - 1]):
                             self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
-        elif(playerId == 4):
-            #print("Actualizando direccion")
-            #print("Estoy yendo a", self.pacDotPos[self.indexPacDot])
-            #print("Estoy en", self.charsPos[playerId][0] // self.cellSize, self.charsPos[playerId][1] // self.cellSize)
-            if( (self.charsPosCenter[playerId][0] // self.cellSize == self.pacDotPos[self.indexPacDot][0]) and
-                (self.charsPosCenter[playerId][1] // self.cellSize == self.pacDotPos[self.indexPacDot][1]) ):
-                #print("llegueeeeeeeeeeeeeeeeeeeeeeeeee")
-                self.indexPacDot = (self.indexPacDot + 1) % len(self.pacDotPos)
+            #For the purple ghost
+            # elif(playerId == 2):
+            #     #If pakman has not been catched
+            #     if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+            #         (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
 
+            #         #print(self.charsPos)
+            #         self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
 
-            else:
-                #print("no he llegado")
-                self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
-                #print(self.ghostPos[playerId - 1])
-                #If the ghost is not able to move then correct it's direction
-                if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
-                    #print("Corregire mi direccion")
-                    self.players[playerId].changeDir(self.correctDir(playerId))
-                else:
-                    destination = self.pacDotPos[self.indexPacDot]
-                    self.paths[playerId - 1] = self.calcPath(None, playerId, destination)
-                    if(self.paths[playerId - 1]):
-                    #print(self.paths[playerId - 1])
-                        self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+            #         if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+            #             self.players[playerId].changeDir(self.correctDir(playerId))
+            #         else:
+            #             self.paths[playerId - 1] = self.calcPath(None, 2)
+            #             #print(self.path)
+            #             if(self.paths[playerId - 1]):
+            #                 self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+
+            #For the orange ghost
+            elif(playerId == 3):
+                #If pakman has not been catched
+                if( (self.charsPos[playerId][0] // self.cellSize != self.charsPos[0][0] // self.cellSize) or
+                    (self.charsPos[playerId][1] // self.cellSize != self.charsPos[0][1] // self.cellSize) ):
+
+                    self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+
+                    #If the ghost is not able to move then correct it's direction
+                    if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                            self.players[playerId].changeDir(self.correctDir(playerId))
                     else:
-                        pass
-                        #print("YA NO HAY MAS CAMINO PERO NO HE LLEGADO")
+                        self.paths[playerId - 1] = self.calcPath(None, playerId)
+                        self.noObstaclesPath = self.calcPath(self.noObstaclesMap, playerId)
+                        if(len(self.noObstaclesPath) < self.visibleDistance and 
+                            self.paths[playerId - 1] == self.noObstaclesPath):
+                            if(self.paths[playerId - 1]):
+                                self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+
+            elif(playerId == 4):
+                #print("Actualizando direccion")
+                #print("Estoy yendo a", self.pacDotPos[self.indexPacDot])
+                #print("Estoy en", self.charsPos[playerId][0] // self.cellSize, self.charsPos[playerId][1] // self.cellSize)
+                if( (self.charsPosCenter[playerId][0] // self.cellSize == self.pacDotPos[self.indexPacDot][0]) and
+                    (self.charsPosCenter[playerId][1] // self.cellSize == self.pacDotPos[self.indexPacDot][1]) ):
+                    #print("llegueeeeeeeeeeeeeeeeeeeeeeeeee")
+                    self.indexPacDot = (self.indexPacDot + 1) % len(self.pacDotPos)
+
+
+                else:
+                    #print("no he llegado")
+                    self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+                    #print(self.ghostPos[playerId - 1])
+                    #If the ghost is not able to move then correct it's direction
+                    if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                        #print("Corregire mi direccion")
+                        self.players[playerId].changeDir(self.correctDir(playerId))
+                    else:
+                        destination = self.pacDotPos[self.indexPacDot]
+                        self.paths[playerId - 1] = self.calcPath(None, playerId, destination)
+                        if(self.paths[playerId - 1]):
+                        #print(self.paths[playerId - 1])
+                            self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
+                        else:
+                            pass
+                            #print("YA NO HAY MAS CAMINO PERO NO HE LLEGADO")
+        elif(self.level == 2):
+
+            if("followPowerUp" in self.bTree.getActiveNode().getName() ):
+                destination = self.powerUpPos
+            elif("followPakman" in self.bTree.getActiveNode().getName()):
+                destination = self.playerPos[0]
+            if(playerId <= 2 and playerId>0):
+            #If destination has not been reached
+                if( (self.charsPos[playerId][0] // self.cellSize != destination[0] // self.cellSize) or
+                    (self.charsPos[playerId][1] // self.cellSize != destination[1] // self.cellSize) ):
+
+                    #print(self.ghostPos)
+                    self.ghostPos[playerId - 1][0] = ( self.charsPosCenter[playerId][0]//self.cellSize,self.charsPosCenter[playerId][1]//self.cellSize )
+
+                    if(not self.checkMovementPlayer(playerId) and self.ghostPos[playerId - 1][0]==self.ghostPos[playerId - 1][1]):
+                        #print("Corrigiendo direccion", playerId)
+                        self.players[playerId].changeDir(self.correctDir(playerId))
+                    else:
+                        #print("Sin corregir direccion", not self.checkMovementPlayer(playerId), self.ghostPos)
+                        self.paths[playerId - 1] = self.calcPath(None, playerId, destination)
+                        #print("Path", self.paths[playerId - 1])
+                        #print(self.paths[playerId - 1], "id", playerId)
+                        if(self.paths[playerId - 1]):
+                            self.players[playerId].changeDir(int(self.paths[playerId - 1][0]))
 
     def updatePlayerPos(self, playerId):
         """
